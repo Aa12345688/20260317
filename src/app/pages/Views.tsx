@@ -743,6 +743,45 @@ export function Profile() {
                     </div>
                 </div>
 
+                {/* API Key Management (For Remote Testing) */}
+                <div className="mb-6 p-4 bg-[#00ff88]/5 border border-[#00ff88]/10 rounded-2xl relative overflow-hidden group/api">
+                    <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#00ff88]/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <Sparkles size={12} className="text-[#00ff88]" />
+                            <h3 className="text-[10px] font-black text-white uppercase tracking-widest">API 金鑰管理 (Remote API Keys)</h3>
+                        </div>
+                        {settings.customApiKeys && (
+                            <button 
+                                onClick={() => updateSettings({ customApiKeys: "" })}
+                                className="text-[8px] font-black text-red-500/50 uppercase hover:text-red-500 transition-all hover:bg-red-500/10 px-2 py-0.5 rounded-md"
+                            >
+                                清除金鑰
+                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="relative mb-3">
+                        <input 
+                            type="password"
+                            placeholder="貼上你的 Gemini API Key (多組請用逗號分隔)"
+                            value={settings.customApiKeys || ""}
+                            onChange={(e) => updateSettings({ customApiKeys: e.target.value })}
+                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[10px] font-mono text-[#00ff88] placeholder:text-white/10 outline-none focus:border-[#00ff88]/40 transition-all shadow-inner"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <div className="flex items-start gap-2 p-2 bg-amber-400/5 border border-amber-400/10 rounded-xl">
+                            <AlertTriangle size={10} className="text-amber-400 mt-0.5" />
+                            <p className="text-[8px] text-gray-400 font-bold leading-relaxed uppercase">
+                                安全提示：由於 GitHub 不會儲存你的原始密鑰，遠端測試時請在此貼上金鑰。密鑰僅存於當前瀏覽器，不會上傳伺服器。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* API Key List with Cooldown Status */}
                 <div className="mt-4 pt-3 border-t border-white/5">
                     <div className="text-[7px] font-black text-white/20 uppercase tracking-[0.2em] mb-2 px-1">已載入的金鑰節點 (Nodes Status)</div>
