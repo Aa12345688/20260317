@@ -24,7 +24,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[380px] pointer-events-none">
+    <nav className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[380px] pointer-events-none">
       <div className="w-full bg-card/90 backdrop-blur-2xl border border-white/15 rounded-full p-1.5 flex justify-around items-center shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] pointer-events-auto">
         {/* 動態渲染導覽清單項目 */}
         {navItems.map((item) => {
