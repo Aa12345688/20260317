@@ -89,9 +89,9 @@ export function MainLayout() {
                     width: isScaled ? `${430 * calculatedScale}px` : '100%',
                     marginBottom: isScaled ? `-${100 * (1 - calculatedScale)}%` : 0,
                     // Dynamic Theme Variables
-                    '--primary': settings.themeColor,
-                    '--primary-rgb': settings.themeColor.startsWith('#') ? hexToRgb(settings.themeColor) : '0, 255, 136',
-                    '--primary-glow': `${settings.themeColor}40`
+                    '--primary': settings.themeColor || "#00ff88",
+                    '--primary-rgb': (settings.themeColor && settings.themeColor.startsWith('#')) ? hexToRgb(settings.themeColor) : '0, 255, 136',
+                    '--primary-glow': `${settings.themeColor || "#00ff88"}40`
                 } as any}
             >
                 <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">

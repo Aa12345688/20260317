@@ -823,6 +823,8 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
     apiStatus: any 
 }) {
     const [selectedModel, setSelectedModel] = useState<string | null>(() => llmService.getPreferredModel());
+    const [pendingColor, setPendingColor] = useState(settings.themeColor || "#00ff88");
+    const [isApplying, setIsApplying] = useState(false);
 
     const renderContent = () => {
         switch (type) {
@@ -956,9 +958,9 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                 ].map(c => (
                                     <button
                                         key={c.color}
-                                        onClick={() => updateSettings({ themeColor: c.color })}
+                                        onClick={() => setPendingColor(c.color)}
                                         className={`group relative aspect-square rounded-2xl border-2 transition-all flex items-center justify-center ${
-                                            settings.themeColor === c.color ? 'border-white scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'border-white/5 hover:border-white/20'
+                                            pendingColor === c.color ? 'border-white scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'border-white/5 hover:border-white/20'
                                         }`}
                                         style={{ backgroundColor: `${c.color}15` }}
                                     >
@@ -966,7 +968,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                             className="w-6 h-6 rounded-full shadow-lg transition-transform group-hover:scale-110"
                                             style={{ backgroundColor: c.color }}
                                         />
-                                        {settings.themeColor === c.color && (
+                                        {pendingColor === c.color && (
                                             <motion.div 
                                                 layoutId="selected-theme"
                                                 className="absolute -inset-1 rounded-[1.2rem] border-2 border-white/40 pointer-events-none"
@@ -980,12 +982,32 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                         <div className="bg-black/40 p-5 rounded-3xl border border-white/5">
                             <h4 className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-3">預覽效果</h4>
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${settings.themeColor}20`, color: settings.themeColor }}>
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${pendingColor}20`, color: pendingColor }}>
                                     <Sparkles size={16} />
                                 </div>
-                                <div className="text-[10px] font-bold text-white/80">目前主題色：{settings.themeColor.toUpperCase()}</div>
+                                <div className="text-[10px] font-bold text-white/80">目前主題色：{pendingColor.toUpperCase()}</div>
                             </div>
                         </div>
+
+                        <button 
+                            onClick={() => {
+                                setIsApplying(true);
+                                setTimeout(() => {
+                                    updateSettings({ themeColor: pendingColor });
+                                    setIsApplying(false);
+                                }, 600);
+                            }}
+                            disabled={isApplying || pendingColor === settings.themeColor}
+                            className={`w-full py-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl ${
+                                pendingColor === settings.themeColor 
+                                ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed' 
+                                : 'bg-[#00ff88] text-[#0f2e24] shadow-[0_0_30px_rgba(0,255,136,0.3)] active:scale-95'
+                            }`}
+                            style={pendingColor !== settings.themeColor ? { backgroundColor: pendingColor } : {}}
+                        >
+                            {isApplying ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
+                            {isApplying ? '正在同步鏈結...' : (pendingColor === settings.themeColor ? '已套用此風格' : '套用視覺風格')}
+                        </button>
 
                         <div className="text-[8px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed text-center px-4">
                             選擇一個顏色以套用至全系統按鈕、圖示與邊框亮光。
