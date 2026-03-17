@@ -44,6 +44,7 @@ interface IngredientContextType {
         uiScale: number; // 0.8 - 1.2
         autoScale: boolean;
         customApiKeys: string; // User defined keys via UI
+        themeColor: string; // e.g., "#00ff88"
     };
     wasteHistory: WasteRecord[];
     savedRecipes: any[];
@@ -93,7 +94,8 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
         },
         uiScale: 1.0,
         autoScale: true,
-        customApiKeys: ""
+        customApiKeys: "",
+        themeColor: "#00ff88"
     });
     const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
 
@@ -119,6 +121,7 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
                 if (parsed.uiScale === undefined) parsed.uiScale = 1.0;
                 if (parsed.autoScale === undefined) parsed.autoScale = true;
                 if (parsed.customApiKeys === undefined) parsed.customApiKeys = "";
+                if (parsed.themeColor === undefined) parsed.themeColor = "#00ff88";
                 setSettings(parsed); 
             } catch (e) { }
         }

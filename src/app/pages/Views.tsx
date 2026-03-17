@@ -4,7 +4,7 @@ import {
     Camera, Sparkles, X, Plus, Minus, Package,
     Trash2, Search, Share2, ChefHat,
     User, Settings, HelpCircle, LogOut, ChevronRight, ChevronLeft,
-    BookOpen, Clock, Users, Loader2, Mic, Edit2, AlertTriangle, Snowflake, Moon, Bell, RefreshCw, Leaf
+    BookOpen, Clock, Users, Loader2, Mic, Edit2, AlertTriangle, Snowflake, Moon, Bell, RefreshCw, Leaf, Palette
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "../components/Shared";
@@ -714,6 +714,7 @@ export function Profile() {
     const settingsGrid = [
         { id: 'api', label: "神經節點", desc: "API & Model", icon: Sparkles, color: "text-purple-400", bg: "bg-purple-500/10" },
         { id: 'dietary', label: "飲食偏好", desc: "Preferences", icon: ChefHat, color: "text-[#00ff88]", bg: "bg-[#00ff88]/10" },
+        { id: 'theme', label: "視覺風格", desc: "Premium Theme", icon: Palette, color: "text-rose-400", bg: "bg-rose-500/10" },
         { id: 'display', label: "介面縮放", desc: "UI Scaling", icon: Settings, color: "text-blue-400", bg: "bg-blue-500/10" },
         { id: 'system', label: "系統設定", desc: "System", icon: Bell, color: "text-amber-400", bg: "bg-amber-500/10" },
     ];
@@ -934,6 +935,60 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                 onChange={(e) => updateSettings({ dietary: { ...settings.dietary, allergies: e.target.value } })}
                                 className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs text-white placeholder:text-white/10 outline-none focus:border-[#00ff88]/30 font-bold transition-all"
                             />
+                        </div>
+                    </div>
+                );
+            case 'theme':
+                return (
+                    <div className="space-y-8">
+                        <div className="space-y-4">
+                            <h4 className="text-[9px] font-black text-rose-400 uppercase tracking-widest px-1">核心主題色 (Premium Elite Accents)</h4>
+                            <div className="grid grid-cols-4 gap-3">
+                                {[
+                                    { name: "Neural Mint", color: "#00ff88" },
+                                    { name: "Cyber Blue", color: "#00d2ff" },
+                                    { name: "Neon Rose", color: "#ff2d55" },
+                                    { name: "Vivid Amber", color: "#ffb800" },
+                                    { name: "Electric Purple", color: "#af52ff" },
+                                    { name: "Soft Sky", color: "#7ed6df" },
+                                    { name: "Deep Earth", color: "#e67e22" },
+                                    { name: "Pure White", color: "#ffffff" }
+                                ].map(c => (
+                                    <button
+                                        key={c.color}
+                                        onClick={() => updateSettings({ themeColor: c.color })}
+                                        className={`group relative aspect-square rounded-2xl border-2 transition-all flex items-center justify-center ${
+                                            settings.themeColor === c.color ? 'border-white scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'border-white/5 hover:border-white/20'
+                                        }`}
+                                        style={{ backgroundColor: `${c.color}15` }}
+                                    >
+                                        <div 
+                                            className="w-6 h-6 rounded-full shadow-lg transition-transform group-hover:scale-110"
+                                            style={{ backgroundColor: c.color }}
+                                        />
+                                        {settings.themeColor === c.color && (
+                                            <motion.div 
+                                                layoutId="selected-theme"
+                                                className="absolute -inset-1 rounded-[1.2rem] border-2 border-white/40 pointer-events-none"
+                                            />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-black/40 p-5 rounded-3xl border border-white/5">
+                            <h4 className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-3">預覽效果</h4>
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${settings.themeColor}20`, color: settings.themeColor }}>
+                                    <Sparkles size={16} />
+                                </div>
+                                <div className="text-[10px] font-bold text-white/80">目前主題色：{settings.themeColor.toUpperCase()}</div>
+                            </div>
+                        </div>
+
+                        <div className="text-[8px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed text-center px-4">
+                            選擇一個顏色以套用至全系統按鈕、圖示與邊框亮光。
                         </div>
                     </div>
                 );

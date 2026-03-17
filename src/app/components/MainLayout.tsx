@@ -15,6 +15,14 @@ import { Bell } from "lucide-react";
  * 3. 處理滑動手勢：監聽左右滑動 (`drag="x"`)，提供類原生 App 的左翻/右翻體驗。
  * 4. 系統級通知顯示：內建模擬的 `Toast` 系統，負責監聽並彈出「APP內的高能警告通知」。
  */
+
+function hexToRgb(hex: string) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? 
+        `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+        '0, 255, 136';
+}
+
 export function MainLayout() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -79,8 +87,12 @@ export function MainLayout() {
                     transform: isScaled ? `scale(${calculatedScale})` : 'none',
                     height: isScaled ? `${100 / calculatedScale}vh` : '100vh',
                     width: isScaled ? `${430 * calculatedScale}px` : '100%',
-                    marginBottom: isScaled ? `-${100 * (1 - calculatedScale)}%` : 0
-                }}
+                    marginBottom: isScaled ? `-${100 * (1 - calculatedScale)}%` : 0,
+                    // Dynamic Theme Variables
+                    '--primary': settings.themeColor,
+                    '--primary-rgb': settings.themeColor.startsWith('#') ? hexToRgb(settings.themeColor) : '0, 255, 136',
+                    '--primary-glow': `${settings.themeColor}40`
+                } as any}
             >
                 <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
                     <AnimatePresence mode="wait">

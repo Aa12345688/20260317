@@ -60,22 +60,22 @@
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: transparent;
-  --ring: #00ff88;
+  --ring: var(--primary);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #00ff88;
+  --chart-1: var(--primary, #00ff88);
   --chart-2: #1a4d3d;
   --chart-3: #0f2e24;
-  --chart-4: #00ff88;
+  --chart-4: var(--primary);
   --chart-5: #1a4d3d;
   --sidebar: #0f2e24;
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #00ff88;
+  --sidebar-primary: var(--primary, #00ff88);
   --sidebar-primary-foreground: #0f2e24;
   --sidebar-accent: #1a4d3d;
-  --sidebar-accent-foreground: #00ff88;
+  --sidebar-accent-foreground: var(--primary);
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #00ff88;
+  --sidebar-ring: var(--primary);
 }
 
 @theme inline {
