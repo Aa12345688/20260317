@@ -59,14 +59,14 @@ function generateAtmosphere(primaryHex: string) {
     };
 }
 
-// 預設調色盤作為基礎參考，但不再是唯一來源
+// 預設調色盤：精英級專業調校 (Elite Professional Tuning)
 const STATIC_PALETTES: Record<string, any> = {
-    "#00ff88": { bg: "#0f2e24", surface: "#1a4d3d", header: "#0d231b" },
-    "#ff8800": { bg: "#0d0a05", surface: "#1a140a", header: "#000000" },
-    "#af52ff": { bg: "#0a0510", surface: "#140a20", header: "#000000" },
-    "#d4af37": { bg: "#ffffff", surface: "#f8f8f8", header: "#f0f0f0", light: true },
-    "#ff0000": { bg: "#0a0000", surface: "#1a0505", header: "#000000" },
-    "#007aff": { bg: "#f2f2f7", surface: "#ffffff", header: "#e5e5ea", light: true }
+    "#00ff88": { name: "Neural Mint", bg: "#061a14", surface: "#0d2e24", header: "#04120e" },
+    "#007aff": { name: "Arctic Blue", bg: "#040a1a", surface: "#0d1b3d", header: "#020612" },
+    "#ff8800": { name: "Cyber Orange", bg: "#0d0a05", surface: "#1a140a", header: "#000000" },
+    "#af52ff": { name: "Neural Purple", bg: "#0a0510", surface: "#140a20", header: "#000000" },
+    "#d4af37": { name: "Royal Gold", bg: "#ffffff", surface: "#f8f8f8", header: "#f0f0f0", light: true },
+    "#ff0000": { name: "Crimson Node", bg: "#0a0000", surface: "#1a0505", header: "#000000" }
 };
 
 export function MainLayout() {

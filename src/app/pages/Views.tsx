@@ -1014,12 +1014,12 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                             <h4 className="text-[9px] font-black text-rose-400 uppercase tracking-widest px-1">核心主題色 (Premium Elite Accents)</h4>
                             <div className="grid grid-cols-4 gap-3">
                                 {[
-                                    { name: "Neural Mint", color: "#00ff88" },
-                                    { name: "黑橘", color: "#ff8800" },
-                                    { name: "黑紫", color: "#af52ff" },
-                                    { name: "白金", color: "#d4af37" },
-                                    { name: "黑紅", color: "#ff0000" },
-                                    { name: "白藍", color: "#007aff" }
+                                    { name: "Neural Mint", color: "#00ff88", desc: "Classic Cyber" },
+                                    { name: "Arctic Blue", color: "#007aff", desc: "Arctic Tech" },
+                                    { name: "Neural Purple", color: "#af52ff", desc: "Ghost Shell" },
+                                    { name: "Cyber Orange", color: "#ff8800", desc: "Mars Colony" },
+                                    { name: "Royal Gold", color: "#d4af37", desc: "Elite Gold" },
+                                    { name: "Crimson Node", color: "#ff0000", desc: "Urgent Red" }
                                 ].map(c => (
                                     <button
                                         key={c.color}
