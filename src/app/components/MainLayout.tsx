@@ -84,26 +84,6 @@ export function MainLayout() {
     const navigate = useNavigate();
     const { settings } = useIngredients();
 
-    // --- UI Scaling / Auto-Adapt Logic ---
-    const [calculatedScale, setCalculatedScale] = useState(settings.uiScale);
-
-    useEffect(() => {
-        if (!settings.autoScale) {
-            setCalculatedScale(settings.uiScale);
-            return;
-        }
-
-        const handleResize = () => {
-            // 自動適應：以 430px 為標準寬度進行縮放
-            const scale = Math.min(window.innerWidth / 430, 1.2); // 最高縮放至 1.2
-            setCalculatedScale(scale);
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [settings.autoScale, settings.uiScale]);
-
     // 定義可以讓使用者橫向滑動輪轉的主要功能分頁排序
     const tabs = ["/", "/inventory", "/recipes", "/saved", "/profile"];
     // 取得當下畫面處在哪一個分頁索引，用來計算左右切換的方向
@@ -133,22 +113,14 @@ export function MainLayout() {
         return () => window.removeEventListener('app-notification', handleNotification);
     }, []);
 
-    const isScaled = settings.autoScale || settings.uiScale !== 1.0;
-
     const activeColor = settings.themeColor || "#00ff88";
     const atmosphere = STATIC_PALETTES[activeColor] || generateAtmosphere(activeColor);
 
     return (
-        <div className={`min-h-screen bg-black flex justify-center w-full overflow-hidden ${!settings.darkMode ? 'light-theme' : ''}`}>
+        <div className={`min-h-screen bg-black flex justify-center w-full overflow-x-hidden ${!settings.darkMode ? 'light-theme' : ''}`}>
             <div
-                className="w-full max-w-[430px] min-h-screen relative flex flex-col shadow-2xl overflow-hidden filter-theme origin-top"
+                className="w-full max-w-[430px] min-h-screen relative flex flex-col shadow-2xl filter-theme bg-[var(--background)] text-[var(--foreground)]"
                 style={{
-                    backgroundColor: 'var(--background)',
-                    color: 'var(--foreground)',
-                    transform: isScaled ? `scale(${calculatedScale})` : 'none',
-                    height: isScaled ? `${100 / calculatedScale}vh` : '100vh',
-                    width: isScaled ? `${430 * calculatedScale}px` : '100%',
-                    marginBottom: isScaled ? `-${100 * (1 - calculatedScale)}%` : 0,
                     // Dynamic Theme Variables
                     '--primary': activeColor,
                     '--primary-rgb': hexToRgb(activeColor),

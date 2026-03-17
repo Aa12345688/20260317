@@ -20,7 +20,6 @@ export function ScannerPage() {
                 <CameraView videoRef={videoRef} />
 
                 {/* 顯示掃描到的食材暫存清單 */}
-                <DetectionSummary />
 
                 <p className="text-center text-gray-400 text-xs mt-8 px-10 leading-relaxed uppercase tracking-widest font-medium opacity-60">將鏡頭對準食材<br />AI 將自動辨識並同步庫存</p>
             </div>
