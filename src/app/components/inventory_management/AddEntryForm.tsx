@@ -16,7 +16,7 @@ interface AddEntryFormProps {
 export function AddEntryForm({ onAdd, onDismiss, categories }: AddEntryFormProps) {
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState(1);
-    const [category, setCategory] = useState("Other");
+    const [category, setCategory] = useState("蔬菜");
 
     const handleSubmit = () => {
         if (name.trim()) {

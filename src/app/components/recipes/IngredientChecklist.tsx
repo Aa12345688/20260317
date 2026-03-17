@@ -16,7 +16,7 @@ export function IngredientChecklist({
     return (
         <div className="mb-10 bg-[#1a4d3d]/20 rounded-[2.5rem] p-8 border border-white/5">
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#00ff88]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" />
                 食材確認
             </h3>
 

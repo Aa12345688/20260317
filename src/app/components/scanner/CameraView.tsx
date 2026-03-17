@@ -3,8 +3,10 @@ import { RefObject, useState, useEffect, useRef } from "react";
 import { Camera, Loader2, RefreshCw, Sparkles, Brain } from "lucide-react";
 import { useIngredients } from "../../services/IngredientContext";
 import { llmService } from "../../services/llmService";
+import { yoloService } from "../../services/yoloService";
 import { DetectionSummary } from "../inventory_management/DetectionSummary";
 import { notificationService } from "../../services/notificationService";
+import { hapticService } from "../../services/hapticService";
 
 // 使用 global 宣告來告訴 TypeScript 我們的 ort 在 window 上
 declare global {
@@ -28,51 +30,24 @@ export function CameraView({ videoRef }: CameraViewProps) {
     const [modelLoaded, setModelLoaded] = useState(false);
     const sessionRef = useRef<any>(null);
 
-    // 類別名稱對照表 (由您的新版 YOLO 權重決定)
-    const CLASS_NAMES = [
-        "apple", "banana", "cabbage", "meat", "orange",
-        "rotten apple", "rotten banana", "rotten cabbage",
-        "rotten meat", "rotten orange", "rotten spinach", "spinach"
-    ];
+    // 類別名稱對照表 (由 yoloService 統一管理)
+    const CLASS_NAMES = yoloService.CLASS_NAMES;
 
-    // 初始化：加載 ONNX 模型
+    // 初始化：檢查 yoloService 狀態
     useEffect(() => {
-        async function initModel() {
-            try {
-                // 從 window 取得全域的 ort 引擎
-                const ort = window.ort;
-                if (!ort) {
-                    console.error("❌ 找不到 AI 引擎元件，請確認 index.html 是否正確引入 ort.min.js");
-                    return;
+        if (yoloService.isLoaded()) {
+            setModelLoaded(true);
+            sessionRef.current = yoloService.getSession();
+        } else {
+            // 如果尚未預熱完成，則持續輪詢
+            const timer = setInterval(() => {
+                if (yoloService.isLoaded()) {
+                    setModelLoaded(true);
+                    sessionRef.current = yoloService.getSession();
+                    clearInterval(timer);
                 }
-
-                // 設定 ONNX Runtime WASM 零件經由本地伺服器讀取 (PWA 離線支援關鍵)
-                // 這裡的路徑必須對應 public/wasm 資料夾
-                const baseUrl = import.meta.env.BASE_URL || "/";
-                const wasmPath = `${baseUrl}wasm/`;
-
-                ort.env.wasm.wasmPaths = wasmPath;
-                ort.env.wasm.numThreads = 1;
-                ort.env.wasm.proxy = false;
-
-                // 從環境取得基礎路徑，並加入 Version Hash 避免瀏覽器快取舊權重
-                const modelUrl = `${baseUrl}best.onnx?v=1.0.0`;
-
-                // 載入模型 (優先嘗試 WebGL GPU 加速)
-                const session = await ort.InferenceSession.create(modelUrl, {
-                    executionProviders: ["webgl", "wasm"],
-                    graphOptimizationLevel: "all"
-                });
-
-                sessionRef.current = session;
-                setModelLoaded(true);
-                console.log("✅ AI 大腦載入成功 (離線部署模式)！");
-            } catch (e) {
-                console.error("❌ 模型載入失敗，具體錯誤內容:", e);
-                if (e instanceof Error) {
-                    console.error("錯誤訊息:", e.message);
-                }
-            }
+            }, 500);
+            return () => clearInterval(timer);
         }
 
         // 偵測網路狀態並自動切換模式
@@ -83,12 +58,11 @@ export function CameraView({ videoRef }: CameraViewProps) {
             }
         };
         window.addEventListener('offline', handleOffline);
-
-        initModel();
         return () => window.removeEventListener('offline', handleOffline);
     }, []);
 
     const handleScan = async () => {
+        hapticService.medium(); // 觸感震動回饋
         if (scanMode === "local") {
             await handleLocalScan();
         } else {
@@ -220,12 +194,14 @@ export function CameraView({ videoRef }: CameraViewProps) {
             if (results.length === 0) {
                 notificationService.send("掃描完成", "Gemini 未能在畫面中辨識出顯著食材。");
             } else {
+                hapticService.light(); // 輕微觸感：檢測到物體
                 results.forEach(item => addItem(item, "ai"));
                 notificationService.send("掃描完成", `Gemini 成功辨識 ${results.length} 項食材`);
             }
         } catch (error: any) {
             console.error("Gemini Scan Error:", error);
-            notificationService.send("掃描失敗", error.message || "無法連線至 Gemini Vision");
+            const msg = error.status ? `[Error ${error.status}] ${error.message}` : (error.message || "無法連線至 Gemini Vision");
+            notificationService.send("掃描失敗", msg);
         } finally {
             setIsScanning(false);
         }
@@ -265,14 +241,19 @@ export function CameraView({ videoRef }: CameraViewProps) {
                     </span>
                 </div>
 
-                {/* Camera View */}
-                <div className="relative aspect-[3/4] bg-[#1a4d3d] rounded-[2.5rem] overflow-hidden border-4 border-[#1a4d3d] shadow-2xl">
+                {/* 攝影機渲染區 (Camera Viewport) */}
+                <div className="relative aspect-[4/5] sm:aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-black border border-white/10 shadow-inner group">
+                    {/* 精英級掃描線動效 */}
+                    {isScanning && scanMode === "local" && (
+                        <div className="animate-scan-laser" />
+                    )}
+                    
                     <video
                         ref={videoRef}
                         autoPlay
                         playsInline
                         muted
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className={`w-full h-full object-cover transition-all duration-700 ${isScanning ? 'scale-105 brightness-110' : 'scale-100 brightness-100'}`}
                     />
 
                     {/* Bounding Box Overlay */}
@@ -327,7 +308,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 <button
                     onClick={handleScan}
                     disabled={isScanning || (scanMode === "local" && !modelLoaded)}
-                    className="w-full bg-primary text-[#0f2e24] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-[#00dd77] transition-all active:scale-[0.98] shadow-[0_8px_20px_rgba(0,255,136,0.3)] disabled:opacity-50"
+                    className="w-full bg-primary text-background py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:brightness-110 transition-all active:scale-[0.98] shadow-[0_8px_30px_var(--primary-glow)] disabled:opacity-50"
                 >
                     {isScanning ? <Loader2 size={24} className="animate-spin" /> : scanMode === "cloud" ? <Sparkles size={24} strokeWidth={3} /> : <Camera size={24} strokeWidth={3} />}
                     {isScanning ? "正在為您分析清單..." : scanMode === "cloud" ? "使用 Gemini 深度辨識" : "開始掃描並識別"}

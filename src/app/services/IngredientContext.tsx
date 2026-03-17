@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { llmService } from "./llmService";
+import { yoloService } from "./yoloService";
 import { notificationService } from "./notificationService";
 
 /**
@@ -95,14 +96,16 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
         uiScale: 1.0,
         autoScale: true,
         customApiKeys: "",
-        themeColor: "#00ff88"
+        themeColor: "var(--primary-default)"
     });
     const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
 
     const [wasteHistory, setWasteHistory] = useState<WasteRecord[]>([]);
 
-    // Load from localStorage on mount
+    // Load from localStorage on mount & Pre-warm YOLO
     useEffect(() => {
+        yoloService.prewarm(); // 全域預熱模型
+        
         const saved = localStorage.getItem("scannedIngredients");
         const savedRecs = localStorage.getItem("recommendedRecipes");
         const savedSettings = localStorage.getItem("appSettings");
@@ -121,7 +124,7 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
                 if (parsed.uiScale === undefined) parsed.uiScale = 1.0;
                 if (parsed.autoScale === undefined) parsed.autoScale = true;
                 if (parsed.customApiKeys === undefined) parsed.customApiKeys = "";
-                if (parsed.themeColor === undefined) parsed.themeColor = "#00ff88";
+                if (parsed.themeColor === undefined) parsed.themeColor = "var(--primary-default)";
                 setSettings(parsed); 
             } catch (e) { }
         }

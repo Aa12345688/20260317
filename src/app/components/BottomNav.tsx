@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router";
  * 
  * 功能亮點：
  * 1. 使用 `react-router` 的 `useLocation` 及 `useNavigate` 判斷當前所在路徑與執行跳轉。
- * 2. 結合賽博龐克主題風格的 UI，點擊時會具備發光 (`#00ff88`) 與縮放動畫。
+ * 2. 結合賽博龐克主題風格的 UI，點擊時會具備發光 (var(--primary)) 與縮放動畫。
  * 3. 處理手機版友善的安全邊距，將其浮動在畫面的最下層並加上玻璃透視背景 (backdrop-blur)。
  */
 export function BottomNav() {

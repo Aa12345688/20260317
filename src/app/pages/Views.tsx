@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from "react-router";
-import { useState, useEffect, useMemo } from "react";
-import {
-    Camera, Sparkles, X, Plus, Minus, Package,
-    Trash2, Search, Share2, ChefHat,
-    User, Settings, HelpCircle, LogOut, ChevronRight, ChevronLeft,
-    BookOpen, Clock, Users, Loader2, Mic, Edit2, AlertTriangle, Snowflake, Moon, Bell, RefreshCw, Leaf, Palette
+import { useState, useRef, useMemo, useEffect } from "react";
+import { 
+    X, Edit2, ChefHat, Snowflake, Package, 
+    Plus, ChevronLeft, Sparkles, Clock, 
+    Minus, Trash2, AlertTriangle, Loader2,
+    ChevronRight, Palette, Settings, Bell,
+    User, HelpCircle, LogOut, Moon,
+    BookOpen, Users, RefreshCw, Leaf
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { PageHeader } from "../components/Shared";
 import { useIngredients, ScannedItem } from "../services/IngredientContext";
 import { formatRelativeTime } from "../services/timeUtils";
@@ -175,7 +177,7 @@ function EditItemModal({ item, onSave, onDismiss }: { item: any, onSave: (id: st
                     <div>
                         <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">分類標籤</label>
                         <div className="flex flex-wrap gap-2">
-                            {["蔬菜", "水果", "肉類", "乳製品", "五穀", "其他"].map(c => (
+                            {["蔬菜", "水果", "肉類", "海鮮", "乳製品", "五穀", "其他"].map(c => (
                                 <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase border transition-all ${category === c ? 'bg-primary text-background border-primary' : 'bg-white/5 text-gray-400 border-white/10'}`}>{c}</button>
                             ))}
                         </div>
@@ -238,10 +240,16 @@ export function Inventory() {
 
     const [showForm, setShowForm] = useState(false); // 是否顯示手動輸入表單
     const [storageTab, setStorageTab] = useState<"fridge" | "freezer">("fridge"); // 切換 冷藏/冷凍 分頁
+    const [categoryTab, setCategoryTab] = useState("全部"); // 新增：食材分類過濾狀態
     const [editingItem, setEditingItem] = useState<any>(null); // 當前正在編輯的食材對象
-    const filtered = scannedItems.filter(i =>
-        (i.storageType || "fridge") === storageTab
-    );
+
+    const categories = ["全部", "蔬菜", "水果", "肉類", "海鮮", "乳製品", "五穀", "其他"];
+
+    const filtered = scannedItems.filter(i => {
+        const matchesStorage = (i.storageType || "fridge") === storageTab;
+        const matchesCategory = categoryTab === "全部" || i.category === categoryTab;
+        return matchesStorage && matchesCategory;
+    });
     const expiredCount = scannedItems.filter(i => {
         const daysPassed = Math.floor((Date.now() - (i.timestamp || Date.now())) / (1000 * 60 * 60 * 24));
         const expiryDays = i.expiryDays !== undefined ? i.expiryDays : 7;
@@ -255,18 +263,44 @@ export function Inventory() {
         setEditingItem(null);
     };
 
+    const containerRef = useRef(null);
+    const { scrollY } = useScroll({ target: containerRef });
+    const y1 = useTransform(scrollY, [0, 500], [0, 100]);
+    const y2 = useTransform(scrollY, [0, 500], [0, -150]);
+
     return (
-        <div className="pb-28 pt-6 relative">
+        <div ref={containerRef} className="pb-28 pt-6 relative overflow-hidden">
+            {/* Parallax Background Elements */}
+            <motion.div style={{ y: y1 }} className="absolute top-20 -left-20 w-80 h-80 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+            <motion.div style={{ y: y2 }} className="absolute bottom-40 -right-20 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+
             {/* Minimal Floating Back Button */}
             <button onClick={() => navigate(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[#0d231b]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
             <div className="flex justify-end px-4 mb-2">
                 <button onClick={() => setShowForm(!showForm)} className="p-2 bg-primary rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Plus size={20} className="text-background stroke-[3]" /></button>
             </div>
 
-            <div className="sticky top-2 z-20 pb-2 px-4 py-2">
+            <div className="sticky top-2 z-20 pb-2 px-4 py-2 space-y-3">
                 <div className="flex bg-[#0d231b]/60 backdrop-blur-xl p-1 rounded-full border border-white/10 shadow-lg">
                     <button onClick={() => setStorageTab('fridge')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'fridge' ? 'bg-primary text-background' : 'text-gray-400'}`}><ChefHat size={16} />冷藏庫</button>
                     <button onClick={() => setStorageTab('freezer')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'freezer' ? 'bg-blue-400 text-background' : 'text-gray-400'}`}><Snowflake size={16} />冷凍庫</button>
+                </div>
+
+                {/* 新增：食材分類水平滾動過濾列 */}
+                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
+                    {categories.map(c => (
+                        <button
+                            key={c}
+                            onClick={() => setCategoryTab(c)}
+                            className={`flex-shrink-0 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
+                                categoryTab === c 
+                                ? (storageTab === 'fridge' ? 'bg-primary border-primary text-background shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'bg-blue-400 border-blue-400 text-background shadow-[0_0_15px_rgba(96,165,250,0.3)]') 
+                                : 'bg-black/20 border-white/5 text-white/40 hover:border-white/20'
+                            }`}
+                        >
+                            {c}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -288,14 +322,15 @@ export function Inventory() {
                     disabled={isGenerating || selectedIds.length === 0}
                     className={`w-full ${storageTab === 'fridge' ? 'bg-primary' : 'bg-blue-400'} text-background py-3.5 rounded-full font-black text-xs uppercase tracking-widest shadow-[0_15px_30px_rgba(0,0,0,0.4)] flex items-center justify-center gap-2.5 disabled:opacity-50 transition-all hover:scale-[1.02] hover:translate-y-[-2px] active:scale-[0.98]`}
                 >
-                    {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                    {isGenerating ? "Synthesizing..." : "生成 AI 食譜方案"}
+                    {isGenerating ? <div className="absolute inset-0 bg-primary/10 animate-synthesis rounded-full blur-xl" /> : null}
+                    {isGenerating ? <Loader2 size={18} className="animate-spin relative z-10" /> : <Sparkles size={18} className="relative z-10" />}
+                    <span className="relative z-10">{isGenerating ? "正在為您量子合成食譜..." : "生成 AI 食譜方案"}</span>
                 </button>
             </div>
 
             <InventoryStats freshItems={scannedItems.length - expiredCount} expiredItems={expiredCount} />
 
-            {showForm && (<AddEntryForm onAdd={(item) => addItem(item, "manual")} onDismiss={() => setShowForm(false)} categories={["全部", "蔬菜", "水果", "乳製品", "肉類", "五穀", "其他"]} />)}
+            {showForm && (<AddEntryForm onAdd={(item) => addItem(item, "manual")} onDismiss={() => setShowForm(false)} categories={["全部", "蔬菜", "水果", "肉類", "海鮮", "乳製品", "五穀", "其他"]} />)}
 
             <div className="px-4 py-3">
                 <h3 className="font-black text-[10px] uppercase text-white/30 mb-3 px-1">存貨紀錄 ({filtered.length})</h3>
@@ -314,7 +349,20 @@ export function Inventory() {
                             const isWarning = !isExpired && daysLeft <= 2;
 
                             return (
-                                <div key={i.id} className={`bg-[#0d231b]/60 backdrop-blur-xl rounded-2xl p-3 border transition-all relative overflow-hidden group shadow-lg hover:shadow-2xl hover:translate-y-[-2px] ${i.isSpoiled || isExpired ? 'border-red-500/50 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : isWarning ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_20px_rgba(251,191,36,0.1)]' : 'border-white/10'}`}>
+                                <motion.div 
+                                    key={i.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    whileHover={{ 
+                                        scale: 1.02, 
+                                        rotateX: 2,
+                                        rotateY: -2,
+                                        translateZ: 20
+                                    }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                    className={`bg-[#0d231b]/60 backdrop-blur-xl rounded-2xl p-3 border transition-all relative overflow-hidden group shadow-lg hover:shadow-2xl ${i.isSpoiled || isExpired ? 'border-red-500/50 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : isWarning ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_20px_rgba(251,191,36,0.1)]' : 'border-white/10'}`}
+                                >
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => toggleSelection(i.id)}
@@ -371,7 +419,7 @@ export function Inventory() {
                                             </div>
                                         </div>
                                     )}
-                                </div>
+                                </motion.div>
                             );
                         })}
                     </div>
@@ -823,7 +871,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
     apiStatus: any 
 }) {
     const [selectedModel, setSelectedModel] = useState<string | null>(() => llmService.getPreferredModel());
-    const [pendingColor, setPendingColor] = useState(settings.themeColor || "#00ff88");
+    const [pendingColor, setPendingColor] = useState(settings.themeColor || "var(--primary-default)");
     const [isApplying, setIsApplying] = useState(false);
 
     const renderContent = () => {
@@ -892,22 +940,32 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
 
                         <div className="space-y-3">
                             <h4 className="text-[9px] font-black text-white/30 uppercase tracking-widest px-1">優先神經模型</h4>
-                            <div className="flex flex-wrap gap-2">
-                                {llmService.getAvailableModels().map((m, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            const next = selectedModel === m ? null : m;
-                                            llmService.setPreferredModel(next);
-                                            setSelectedModel(next);
-                                        }}
-                                        className={`px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-tighter border transition-all ${
-                                            selectedModel === m ? 'bg-primary border-primary text-background shadow-lg' : 'bg-white/5 border-white/10 text-white/40'
-                                        }`}
-                                    >
-                                        {m}
-                                    </button>
-                                ))}
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {llmService.getAvailableModels().map((m, idx) => {
+                                    const isRecommended = m.includes('3.1-flash-lite');
+                                    const isNew = m.startsWith('gemini-3');
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => {
+                                                const next = selectedModel === m ? null : m;
+                                                llmService.setPreferredModel(next);
+                                                setSelectedModel(next);
+                                            }}
+                                            className={`relative px-3 py-3 rounded-2xl text-[8px] font-black uppercase tracking-tighter border transition-all flex flex-col items-center justify-center gap-1 ${
+                                                selectedModel === m ? 'bg-primary border-primary text-background shadow-lg scale-105' : 'bg-black/40 border-white/5 text-white/40 hover:border-white/20'
+                                            }`}
+                                        >
+                                            {isRecommended && (
+                                                <span className="absolute -top-2 px-1.5 py-0.5 bg-amber-400 text-background rounded-full text-[6px] font-black animate-pulse shadow-sm">額度最優</span>
+                                            )}
+                                            {isNew && !isRecommended && (
+                                                <span className="absolute -top-2 px-1.5 py-0.5 bg-purple-500 text-white rounded-full text-[6px] font-black shadow-sm">最新版本</span>
+                                            )}
+                                            <span className="z-10">{m.replace('gemini-', '').toUpperCase()}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>

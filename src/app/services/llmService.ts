@@ -29,6 +29,7 @@ export interface LLMRecipe {
 // 支援的模型列表，按優先順序排列 (優先使用最新且穩定的版本)
 const GEMINI_MODELS = [
     "gemini-3.1-flash-lite", 
+    "gemini-3.1-flash",
     "gemini-3-flash",
     "gemini-2.5-flash", 
     "gemini-2.5-flash-lite",
@@ -264,31 +265,45 @@ class LLMService {
 格式：[{name, time, difficulty, category, requiredIngredients, description, sustainabilityTip, substitutionTip, steps:[{title, description}], matchScore}]`;
     }
 
+    private cleanJson(text: string): string {
+        // 移除 Markdown 代碼塊 (如 ```json ... ```)
+        return text.replace(/```json/g, "").replace(/```/g, "").trim();
+    }
+
     async detectIngredientsFromImage(base64Image: string): Promise<any[]> {
         const data = await this.scheduledRequest((model) => ({
             contents: [{
                 parts: [
-                    { text: "分析這張照片，列出所有食材及其狀態 (JSON: [{name, category, isSpoiled, confidence}])" },
+                    { text: "分析這張照片，辨識所有食材。請僅回傳 JSON Array 格式，包含: [{name, category, isSpoiled, confidence}]。不要有任何解釋文字。" },
                     { inline_data: { mime_type: "image/jpeg", data: base64Image } }
                 ]
             }],
-            generationConfig: { temperature: 0.2, responseMimeType: "application/json" }
+            generationConfig: { 
+                temperature: 0.2, 
+                responseMimeType: "application/json" 
+            }
         }));
 
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Vision response empty");
+        if (!text) throw new Error("Vision response empty (視覺辨識反應為空)");
 
-        const results = JSON.parse(text);
-        return results.map((r: any) => ({
-            id: `ai-vision-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-            name: r.name,
-            quantity: 1,
-            category: r.category || "其他",
-            timestamp: Date.now(),
-            confidence: r.confidence || 0.9,
-            isSpoiled: r.isSpoiled || false,
-            storageType: "fridge"
-        }));
+        try {
+            const cleaned = this.cleanJson(text);
+            const results = JSON.parse(cleaned);
+            return results.map((r: any) => ({
+                id: `ai-vision-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+                name: r.name,
+                quantity: 1,
+                category: r.category || "其他",
+                timestamp: Date.now(),
+                confidence: r.confidence || 0.9,
+                isSpoiled: r.isSpoiled || false,
+                storageType: "fridge"
+            }));
+        } catch (e) {
+            console.error("[LLM] Vision JSON Parse Error:", e, "Raw text:", text);
+            throw new Error("無法解析識別結果，AI 反應格式不正確。");
+        }
     }
 
     private getPlaceholderImage(category: string): string {
