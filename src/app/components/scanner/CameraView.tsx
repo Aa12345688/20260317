@@ -286,7 +286,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                                     top: `${boxData.box[1] * 100}%`,
                                     width: `${(boxData.box[2] - boxData.box[0]) * 100}%`,
                                     height: `${(boxData.box[3] - boxData.box[1]) * 100}%`,
-                                    borderColor: boxData.isSpoiled ? '#ff4d4d' : '#00ff88',
+                                    borderColor: boxData.isSpoiled ? '#ff4d4d' : 'var(--primary)',
                                     borderWidth: '2px',
                                     borderStyle: 'solid',
                                     borderRadius: '8px'

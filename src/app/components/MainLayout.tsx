@@ -15,51 +15,58 @@ import { Bell } from "lucide-react";
  * 4. 系統級通知顯示：內建模擬的 `Toast` 系統，負責監聽並彈出「APP內的高能警告通知」。
  */
 
-function hexToRgb(hex: string) {
+function hexToRgbValues(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? 
-        `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
-        '0, 255, 136';
+        [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : 
+        [0, 255, 136];
 }
 
-const THEME_PALETTES: Record<string, any> = {
-    "#00ff88": { // Neural Mint (Default)
-        bg: "#0f2e24",
-        surface: "#1a4d3d",
-        header: "#0d231b"
-    },
-    "#ff8800": { // 黑橘 (Black Orange)
-        bg: "#0d0a05",
-        surface: "#1a140a",
-        header: "#000000"
-    },
-    "#af52ff": { // 黑紫 (Black Purple)
-        bg: "#0a0510",
-        surface: "#140a20",
-        header: "#000000"
-    },
-    "#d4af37": { // 白金 (White Gold)
-        bg: "#ffffff",
-        surface: "#f8f8f8",
-        header: "#f0f0f0",
-        light: true
-    },
-    "#ff0000": { // 黑紅 (Black Red)
-        bg: "#0a0000",
-        surface: "#1a0505",
-        header: "#000000"
-    },
-    "#007aff": { // 白藍 (White Blue)
-        bg: "#f2f2f7",
-        surface: "#ffffff",
-        header: "#e5e5ea",
-        light: true
-    },
-    "#000000": { // Digital Black
-        bg: "#000000",
-        surface: "#111111",
-        header: "#000000"
+function hexToRgb(hex: string) {
+    const [r, g, b] = hexToRgbValues(hex);
+    return `${r}, ${g}, ${b}`;
+}
+
+/**
+ * 根據主色自動生成氛圍 (Procedural Atmosphere)
+ * bg: 原色深度降低到 5-8%
+ * surface: 原色深度降低到 12-15%
+ */
+function generateAtmosphere(primaryHex: string) {
+    const [r, g, b] = hexToRgbValues(primaryHex);
+    
+    // 計算亮度 (Luminance) 來決定是否使用淺色模式
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const isLight = luminance > 0.7;
+
+    if (isLight) {
+        return {
+            bg: "#ffffff",
+            surface: "#f8f8f8",
+            header: "#f0f0f0",
+            light: true
+        };
     }
+
+    // 深色模式：計算主色的超暗版本
+    const darken = (val: number, factor: number) => Math.floor(val * factor);
+    
+    return {
+        bg: `rgb(${darken(r, 0.08)}, ${darken(g, 0.08)}, ${darken(b, 0.08)})`,
+        surface: `rgb(${darken(r, 0.15)}, ${darken(g, 0.15)}, ${darken(b, 0.15)})`,
+        header: `rgb(${darken(r, 0.05)}, ${darken(g, 0.05)}, ${darken(b, 0.05)})`,
+        light: false
+    };
+}
+
+// 預設調色盤作為基礎參考，但不再是唯一來源
+const STATIC_PALETTES: Record<string, any> = {
+    "#00ff88": { bg: "#0f2e24", surface: "#1a4d3d", header: "#0d231b" },
+    "#ff8800": { bg: "#0d0a05", surface: "#1a140a", header: "#000000" },
+    "#af52ff": { bg: "#0a0510", surface: "#140a20", header: "#000000" },
+    "#d4af37": { bg: "#ffffff", surface: "#f8f8f8", header: "#f0f0f0", light: true },
+    "#ff0000": { bg: "#0a0000", surface: "#1a0505", header: "#000000" },
+    "#007aff": { bg: "#f2f2f7", surface: "#ffffff", header: "#e5e5ea", light: true }
 };
 
 export function MainLayout() {
@@ -118,6 +125,9 @@ export function MainLayout() {
 
     const isScaled = settings.autoScale || settings.uiScale !== 1.0;
 
+    const activeColor = settings.themeColor || "#00ff88";
+    const atmosphere = STATIC_PALETTES[activeColor] || generateAtmosphere(activeColor);
+
     return (
         <div className={`min-h-screen bg-black flex justify-center w-full overflow-hidden ${!settings.darkMode ? 'light-theme' : ''}`}>
             <div 
@@ -130,13 +140,13 @@ export function MainLayout() {
                     width: isScaled ? `${430 * calculatedScale}px` : '100%',
                     marginBottom: isScaled ? `-${100 * (1 - calculatedScale)}%` : 0,
                     // Dynamic Theme Variables
-                    '--primary': settings.themeColor || "#00ff88",
-                    '--primary-rgb': (settings.themeColor && settings.themeColor.startsWith('#')) ? hexToRgb(settings.themeColor) : '0, 255, 136',
-                    '--primary-glow': `${settings.themeColor || "#00ff88"}40`,
-                    '--background': THEME_PALETTES[settings.themeColor]?.bg || "#0f2e24",
-                    '--card': THEME_PALETTES[settings.themeColor]?.surface || "#1a4d3d",
-                    '--header-bg': THEME_PALETTES[settings.themeColor]?.header || "#0d231b",
-                    '--foreground': THEME_PALETTES[settings.themeColor]?.light ? "#0f2e24" : "#ffffff"
+                    '--primary': activeColor,
+                    '--primary-rgb': hexToRgb(activeColor),
+                    '--primary-glow': `${activeColor}40`,
+                    '--background': atmosphere.bg,
+                    '--card': atmosphere.surface,
+                    '--header-bg': atmosphere.header,
+                    '--foreground': atmosphere.light ? "#1a4d3d" : "#ffffff"
                 } as any}
             >
                 <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth" style={{ backgroundColor: 'var(--background)' }}>

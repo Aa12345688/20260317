@@ -171,12 +171,33 @@ class LLMService {
         throw new Error("All nodes and models exhausted");
     }
 
+    /**
+     * 計算食材雜湊值作為快取 Key
+     */
+    private getCacheKey(ingredients: string[], preferences?: string): string {
+        const sorted = [...ingredients].sort().join(",");
+        return `recipe-cache-${sorted}-${preferences || ""}`;
+    }
+
     async generateRecipes(request: LLMRecipeRequest): Promise<LLMRecipe[]> {
+        const cacheKey = this.getCacheKey(request.ingredients, request.preferences);
+        
+        // 1. 嘗試從快取讀取
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                console.log("[LLM] 命中快取，正在載入預存食譜...");
+                return JSON.parse(cached);
+            }
+        } catch (e) {
+            console.warn("[LLM] 快取讀取失敗:", e);
+        }
+
         try {
             const data = await this.scheduledRequest((model) => ({
                 contents: [{ parts: [{ text: this.getRecipePrompt(request) }] }],
                 generationConfig: {
-                    temperature: 0.3, // 降低隨機性，更符合家常與實用性
+                    temperature: 0.3,
                     responseMimeType: "application/json"
                 }
             }));
@@ -184,15 +205,13 @@ class LLMService {
             const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
             if (!text) throw new Error("Empty AI response");
 
-            const recipes = JSON.parse(text);
-            return recipes.map((r: any) => ({
+            const recipes = JSON.parse(text).map((r: any) => ({
                 id: `ai-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
                 name: r.name || "AI 家常料理",
                 image: this.getPlaceholderImage(r.category),
                 time: r.time || "20 min",
                 difficulty: r.difficulty || "easy",
                 category: r.category || "mixed",
-                // 確保一定是陣列，避免前端 map 崩潰
                 requiredIngredients: this.normalizeArray(r.requiredIngredients || request.ingredients),
                 description: r.description || "符合現有食材的實用食譜建議。",
                 matchScore: r.matchScore || 90,
@@ -200,6 +219,15 @@ class LLMService {
                 sustainabilityTip: r.sustainabilityTip || "",
                 substitutionTip: r.substitutionTip || ""
             }));
+
+            // 2. 寫入快取
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify(recipes));
+            } catch (e) {
+                console.warn("[LLM] 快取寫入失敗:", e);
+            }
+
+            return recipes;
         } catch (e) {
             console.error("[LLM] 生成食譜最終失敗:", e);
             return this.getLocalFallback(request.ingredients);
