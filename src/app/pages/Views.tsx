@@ -4,7 +4,7 @@ import {
     Camera, Sparkles, X, Plus, Minus, Package,
     Trash2, Search, Share2, ChefHat,
     User, Settings, HelpCircle, LogOut, ChevronRight, ChevronLeft,
-    BookOpen, Clock, Users, Loader2, Mic, Edit2, AlertTriangle, Snowflake, Moon, Bell
+    BookOpen, Clock, Users, Loader2, Mic, Edit2, AlertTriangle, Snowflake, Moon, Bell, RefreshCw, Leaf
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "../components/Shared";
@@ -445,9 +445,17 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
             <div className="flex items-center justify-between mb-6 relative z-20">
                 <div>
                     <h3 className="text-[10px] font-black text-[#00ff88] uppercase tracking-[0.2em] mb-1">食材損耗分析 (Waste Analytics)</h3>
-                    <div className="flex items-center gap-2">
-                        <div className="text-xl font-black text-white tracking-tighter">{sustainabilityIndex}%</div>
-                        <div className="text-[8px] font-bold text-gray-500 uppercase tracking-widest border-l border-white/10 pl-2">食材利用效率</div>
+                    <div className="flex items-center gap-3">
+                        <div className="flex flex-col">
+                            <div className="text-xl font-black text-white tracking-tighter">{sustainabilityIndex}%</div>
+                            <div className="text-[7px] font-bold text-gray-500 uppercase tracking-widest">利用效率</div>
+                        </div>
+                        {expiringSoon.length > 0 && (
+                            <div className="bg-amber-400/10 border border-amber-400/20 rounded-xl px-2.5 py-1.5 flex flex-col">
+                                <div className="text-[9px] font-black text-amber-400 tracking-tighter">儲蓄潛力 ${expiringSoon.length * 50}</div>
+                                <div className="text-[6px] font-bold text-amber-400/60 uppercase">若及時料理</div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="flex bg-[#0f2e24] p-1 rounded-xl border border-white/10">
@@ -1149,7 +1157,40 @@ export function RecipeDetail() {
         <div className="pb-32 pt-0 relative">
             <button onClick={() => nav(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all text-white"><ChevronLeft size={20} /></button>
             <RecipeHero image={recipe.image} name={recipe.name} />
-            <div className="px-6 py-6"><div className="grid grid-cols-3 gap-3 mb-8">{[{ i: Clock, v: recipe.time }, { i: ChefHat, v: recipe.difficulty }, { i: Users, v: "2-3人份" }].map((s, i) => (<div key={i} className="bg-white/5 rounded-2xl p-4 text-center"><s.i className="w-4 h-4 mx-auto mb-2 text-[#00ff88]" /><div className="text-xs font-black text-white">{s.v}</div></div>))}</div>
+            <div className="px-6 py-6">
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    {[{ i: Clock, v: recipe.time }, { i: ChefHat, v: recipe.difficulty }, { i: Users, v: "2-3人份" }].map((s, i) => (
+                        <div key={i} className="bg-white/5 rounded-2xl p-4 text-center">
+                            <s.i className="w-4 h-4 mx-auto mb-2 text-[#00ff88]" />
+                            <div className="text-xs font-black text-white">{s.v}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Neural Kitchen Elite: AI Insights */}
+                {(recipe.sustainabilityTip || recipe.substitutionTip) && (
+                    <div className="mb-8 space-y-3">
+                        {recipe.substitutionTip && (
+                            <div className="bg-amber-400/10 border border-amber-400/20 rounded-2xl p-4 flex gap-3">
+                                <RefreshCw size={16} className="text-amber-400 shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">智慧食材替代建議</div>
+                                    <p className="text-[11px] text-white/70 leading-relaxed font-bold">{recipe.substitutionTip}</p>
+                                </div>
+                            </div>
+                        )}
+                        {recipe.sustainabilityTip && (
+                            <div className="bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-2xl p-4 flex gap-3">
+                                <Leaf size={16} className="text-[#00ff88] shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest mb-1">零浪費智慧 (Zero Waste Tip)</div>
+                                    <p className="text-[11px] text-white/70 leading-relaxed font-bold">{recipe.sustainabilityTip}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <IngredientChecklist ingredients={recipe.requiredIngredients} checkedItems={checked} onToggle={(i) => { const n = [...checked]; n[i] = !n[i]; setChecked(n); }} progress={Math.round((checked.filter(Boolean).length / recipe.requiredIngredients.length) * 100)} />
                 <CookingProtocol steps={recipe.steps || [{ title: "初始化", description: "準備食材。" }, { title: "執行", description: "標準烹飪。" }]} />
 

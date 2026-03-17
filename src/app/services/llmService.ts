@@ -22,6 +22,8 @@ export interface LLMRecipe {
     description: string;
     matchScore: number;
     steps?: { title: string; description: string }[];
+    sustainabilityTip?: string; // 新增：環保減廢小撇步
+    substitutionTip?: string;  // 新增：食材替代建議
 }
 
 // 支援的模型列表，按優先順序排列 (優先使用最新且穩定的版本)
@@ -194,7 +196,9 @@ class LLMService {
                 requiredIngredients: this.normalizeArray(r.requiredIngredients || request.ingredients),
                 description: r.description || "符合現有食材的實用食譜建議。",
                 matchScore: r.matchScore || 90,
-                steps: this.normalizeSteps(r.steps)
+                steps: this.normalizeSteps(r.steps),
+                sustainabilityTip: r.sustainabilityTip || "",
+                substitutionTip: r.substitutionTip || ""
             }));
         } catch (e) {
             console.error("[LLM] 生成食譜最終失敗:", e);
@@ -226,9 +230,10 @@ class LLMService {
 規則：
 1. **風格**：必須是「家常菜」(Home-style)，避免法式精緻料理或過於複雜的創意料理。
 2. **食材限制**：盡可能只使用提供的食材。除了常見的基礎調味料（油、鹽、醬油、胡椒、糖、蒜、蔥）外，不可隨意添加其他需要額外購買的主菜或配料。
-3. **替代方案**：如果必須使用到某些常用但用戶沒提到的食材（例如雞蛋、洋蔥），請在 description 中標註「建議替代方案」或「若無可省略」。
-4. **輸出格式**：必須維持 JSON Array 格式。
-格式：[{name, time, difficulty, category, requiredIngredients, description, steps:[{title, description}], matchScore}]`;
+3. **續航與替代**：如果必須使用到某些常用但用戶沒提到的食材（例如雞蛋、洋蔥），請在 \`substitutionTip\` 中說明替代方案。
+4. **零浪費智慧 (Zero-Waste)**：你必須針對這道食譜提供一個 \`sustainabilityTip\`，告訴用戶如何減少食材浪費（例如：剩餘菜梗可以熬湯、果皮可以除臭、如何延長食材保存等）。
+5. **輸出格式**：必須維持 JSON Array 格式。
+格式：[{name, time, difficulty, category, requiredIngredients, description, sustainabilityTip, substitutionTip, steps:[{title, description}], matchScore}]`;
     }
 
     async detectIngredientsFromImage(base64Image: string): Promise<any[]> {

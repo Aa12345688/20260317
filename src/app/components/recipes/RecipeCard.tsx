@@ -1,4 +1,4 @@
-import { Clock, TrendingUp, ChevronRight } from "lucide-react";
+import { Clock, TrendingUp, ChevronRight, Leaf } from "lucide-react";
 
 interface RecipeCardProps {
     recipe: any;
@@ -35,6 +35,14 @@ export function RecipeCard({ recipe, onClick, getCategoryLabel }: RecipeCardProp
                     <span className="text-[9px] font-black text-[#00ff88]">{recipe.matchScore}%</span>
                     <span className="text-[4px] font-black text-white/40 uppercase tracking-tighter">MATCH</span>
                 </div>
+
+                {/* Sustainability Badge */}
+                {recipe.sustainabilityTip && (
+                    <div className="absolute top-1.5 left-1.5 bg-[#00ff88] rounded-md px-1.5 py-1 flex items-center gap-1 shadow-lg border border-white/20">
+                        <Leaf size={10} className="text-[#0f2e24]" fill="currentColor" />
+                        <span className="text-[8px] font-black text-[#0f2e24] uppercase tracking-tighter">ECO</span>
+                    </div>
+                )}
             </div>
 
             <div className="w-full px-1">
