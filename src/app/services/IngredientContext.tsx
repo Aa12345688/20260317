@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { llmService } from "./llmService";
+import { llmService, LLMRecipe } from "./llmService";
 import { yoloService } from "./yoloService";
 import { notificationService } from "./notificationService";
 
@@ -27,28 +27,30 @@ export interface WasteRecord {
     items?: string[]; // 具體浪費的食材名稱清單
 }
 
+export interface AppSettings {
+    notifications: boolean;
+    neuralOptimized: boolean;
+    confidenceThreshold: number;
+    darkMode: boolean;
+    dietary: {
+        vegetarian: boolean;
+        lowCalorie: boolean;
+        allergies: string;
+    };
+    uiScale: number;
+    autoScale: boolean;
+    customApiKeys: string;
+    themeColor: string;
+}
+
 interface IngredientContextType {
     scannedItems: ScannedItem[];
-    recommendedRecipes: any[];
+    recommendedRecipes: LLMRecipe[];
     tempDetections: ScannedItem[];
     selectedIds: string[];
-    settings: { 
-        notifications: boolean; 
-        neuralOptimized: boolean; 
-        confidenceThreshold: number; 
-        darkMode: boolean;
-        dietary: {
-            vegetarian: boolean;
-            lowCalorie: boolean;
-            allergies: string; // e.g., "花生, 海鮮"
-        };
-        uiScale: number; // 0.8 - 1.2
-        autoScale: boolean;
-        customApiKeys: string; // User defined keys via UI
-        themeColor: string; // e.g., "#00ff88"
-    };
+    settings: AppSettings;
     wasteHistory: WasteRecord[];
-    savedRecipes: any[];
+    savedRecipes: LLMRecipe[];
     addItem: (item: Partial<ScannedItem>, source?: "ai" | "manual") => void;
     updateQuantity: (id: string, delta: number) => void;
     updateItem: (id: string, updates: Partial<ScannedItem>) => void;
@@ -56,12 +58,13 @@ interface IngredientContextType {
     removeIngredient: (id: string) => void;
     toggleSelection: (id: string) => void;
     generateRecipe: () => Promise<void>;
-    saveRecipe: (recipe: any) => void;
+    saveRecipe: (recipe: LLMRecipe) => void;
     unsaveRecipe: (recipeId: string) => void;
     clearAll: () => void;
-    setRecipes: (recipes: any[]) => void;
+    setRecipes: (recipes: LLMRecipe[]) => void;
     clearTempDetections: () => void;
-    updateSettings: (settings: Partial<IngredientContextType['settings']>) => void;
+    updateSettings: (settings: Partial<AppSettings>) => void;
+    isLoading: boolean;
 }
 
 /**
@@ -80,13 +83,13 @@ const IngredientContext = createContext<IngredientContextType | undefined>(undef
  */
 export function IngredientProvider({ children }: { children: ReactNode }) {
     const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
-    const [recommendedRecipes, setRecommendedRecipes] = useState<any[]>([]);
+    const [recommendedRecipes, setRecommendedRecipes] = useState<LLMRecipe[]>([]);
     const [tempDetections, setTempDetections] = useState<ScannedItem[]>([]);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [settings, setSettings] = useState({ 
-        notifications: true, 
-        neuralOptimized: true, 
-        confidenceThreshold: 0.25, 
+    const [settings, setSettings] = useState<AppSettings>({
+        notifications: true,
+        neuralOptimized: true,
+        confidenceThreshold: 0.25,
         darkMode: true,
         dietary: {
             vegetarian: false,
@@ -98,24 +101,25 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
         customApiKeys: "",
         themeColor: "var(--primary-default)"
     });
-    const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
+    const [savedRecipes, setSavedRecipes] = useState<LLMRecipe[]>([]);
 
     const [wasteHistory, setWasteHistory] = useState<WasteRecord[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Load from localStorage on mount & Pre-warm YOLO
     useEffect(() => {
         yoloService.prewarm(); // 全域預熱模型
-        
+
         const saved = localStorage.getItem("scannedIngredients");
         const savedRecs = localStorage.getItem("recommendedRecipes");
         const savedSettings = localStorage.getItem("appSettings");
         const savedBookmarked = localStorage.getItem("savedRecipes");
         const savedWaste = localStorage.getItem("wasteHistory");
-        
+
         if (saved) try { setScannedItems(JSON.parse(saved)); } catch (e) { setScannedItems([]); }
         if (savedRecs) try { setRecommendedRecipes(JSON.parse(savedRecs)); } catch (e) { setRecommendedRecipes([]); }
         if (savedSettings) {
-            try { 
+            try {
                 const parsed = JSON.parse(savedSettings);
                 // Migration: Ensure dietary settings exist
                 if (!parsed.dietary) {
@@ -125,15 +129,15 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
                 if (parsed.autoScale === undefined) parsed.autoScale = true;
                 if (parsed.customApiKeys === undefined) parsed.customApiKeys = "";
                 if (parsed.themeColor === undefined) parsed.themeColor = "var(--primary-default)";
-                setSettings(parsed); 
+                setSettings(parsed);
             } catch (e) { }
         }
         if (savedBookmarked) try { setSavedRecipes(JSON.parse(savedBookmarked)); } catch (e) { setSavedRecipes([]); }
         if (savedWaste) {
-            try { 
+            try {
                 const parsed = JSON.parse(savedWaste);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    setWasteHistory(parsed); 
+                    setWasteHistory(parsed);
                 } else {
                     setWasteHistory([]);
                 }
@@ -141,6 +145,7 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
         } else {
             setWasteHistory([]);
         }
+        setIsLoading(false);
     }, []);
 
     // Notification check effect
@@ -258,18 +263,18 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
 
     const removeItem = (id: string) => {
         if (!id) return;
-        
+
         const itemToRemove = scannedItems.find(i => i.id === id);
-        
+
         if (itemToRemove) {
             const now = Date.now();
             const daysPassed = Math.floor((now - (itemToRemove.timestamp || now)) / (1000 * 60 * 60 * 24));
             const expiryDays = itemToRemove.expiryDays !== undefined ? itemToRemove.expiryDays : 7;
             const daysLeft = expiryDays - daysPassed;
-            
+
             // 判定條件：已標記損壞、天數到期、或手動設為 0
             const isWaste = itemToRemove.isSpoiled || daysLeft <= 0 || expiryDays <= 0;
-            
+
             if (isWaste) {
                 // 發送即時通知，告知數據已錄入
                 notificationService.send("📊 數據統計更新", `已將 "${itemToRemove.name}" 計入今日浪費數據`);
@@ -278,10 +283,10 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
                     const today = new Date();
                     // 格式：YYYY-MM-DD (精確到本地日期)
                     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-                    
+
                     const newHistory = [...prev];
                     const existingIdx = newHistory.findIndex(h => h.date === dateStr);
-                    
+
                     if (existingIdx !== -1) {
                         const existing = newHistory[existingIdx];
                         newHistory[existingIdx] = {
@@ -318,9 +323,9 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
             throw new Error("請選擇有效的食材進行合成（損壞食材將自動排除）");
         }
 
-        const recipes = await llmService.generateRecipes({ 
+        const recipes = await llmService.generateRecipes({
             ingredients: selectedIngredients,
-            preferences: JSON.stringify(settings.dietary) 
+            preferences: JSON.stringify(settings.dietary)
         });
         setRecommendedRecipes(recipes);
     };
@@ -336,7 +341,7 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
     const clearAll = () => {
         // 第一步：物理層級清空所有 localStorage (最徹底的解決方案)
         localStorage.clear();
-        
+
         // 第二步：同步重置所有記憶體狀態
         setScannedItems([]);
         setRecommendedRecipes([]);
@@ -344,16 +349,16 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
         setSavedRecipes([]);
         setWasteHistory([]);
         setSelectedIds([]);
-        
+
         // 第三步：強制重新整理網頁，確保所有 Context 與快取完全刷新
         window.location.reload();
     };
 
-    const updateSettings = (newSettings: Partial<IngredientContextType['settings']>) => {
+    const updateSettings = (newSettings: Partial<AppSettings>) => {
         setSettings(prev => ({ ...prev, ...newSettings }));
     };
 
-    const saveRecipe = (recipe: any) => {
+    const saveRecipe = (recipe: LLMRecipe) => {
         setSavedRecipes(prev => {
             if (prev.find(r => r.id === recipe.id)) return prev;
             return [...prev, recipe];
@@ -385,7 +390,8 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
             clearAll,
             setRecipes: setRecommendedRecipes,
             clearTempDetections,
-            updateSettings
+            updateSettings,
+            isLoading
         }}>
             {children}
         </IngredientContext.Provider>

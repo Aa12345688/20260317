@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { BottomNav } from "../components/BottomNav";
+import { BottomNav } from "./BottomNav";
 import { motion, AnimatePresence } from "framer-motion";
 import { useIngredients } from "../services/IngredientContext";
 import { useEffect, useState } from "react";

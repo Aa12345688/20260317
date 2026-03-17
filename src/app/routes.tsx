@@ -1,14 +1,12 @@
 import { createHashRouter } from "react-router";
 import { MainLayout } from "./components/MainLayout";
-import {
-  Scanner,
-  Ingredients,
-  Recipes,
-  RecipeDetail,
-  Saved,
-  Profile,
-  Inventory
-} from "./pages/Views";
+import { ScannerPage as Scanner } from "./pages/Scanner/ScannerPage";
+import { IngredientsPage as Ingredients } from "./pages/Ingredients/IngredientsPage";
+import { RecipesPage as Recipes } from "./pages/Recipes/RecipesPage";
+import { RecipeDetailPage as RecipeDetail } from "./pages/RecipeDetail/RecipeDetailPage";
+import { SavedPage as Saved } from "./pages/Saved/SavedPage";
+import { ProfilePage as Profile } from "./pages/Profile/ProfilePage";
+import { InventoryPage as Inventory } from "./pages/Inventory/InventoryPage";
 
 /**
  * 系統路由器 (Router Configuration)

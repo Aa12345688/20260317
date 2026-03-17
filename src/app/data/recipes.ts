@@ -8,8 +8,11 @@ export interface Recipe {
   category: "vegetable" | "fruit" | "meat" | "mixed"; // 分類
   requiredIngredients: string[]; // 必備食材
   optionalIngredients: string[]; // 可選/推薦搭配食材
-  wasteReduction: string; // 減少浪費比例（Mockup 數據）
+  matchScore: number; // 匹配分數
   description: string; // 簡介
+  steps?: { title: string; description: string }[];
+  sustainabilityTip?: string;
+  substitutionTip?: string;
 }
 
 export const recipeDatabase: Recipe[] = [
@@ -23,8 +26,9 @@ export const recipeDatabase: Recipe[] = [
     category: "vegetable",
     requiredIngredients: ["Tomatoes"],
     optionalIngredients: ["Spinach", "Garlic", "Olive Oil"],
-    wasteReduction: "35%",
+    matchScore: 35,
     description: "Fresh tomato pasta with aromatic herbs",
+    steps: [{ title: "水煮麵條", description: "將義大利麵放入鹽水中煮熟。" }, { title: "調製醬汁", description: "將番茄與大蒜拌炒成醬。" }]
   },
   {
     id: "spinach-frittata",
@@ -35,8 +39,9 @@ export const recipeDatabase: Recipe[] = [
     category: "vegetable",
     requiredIngredients: ["Spinach", "Tomatoes"],
     optionalIngredients: ["Cheese", "Onions"],
-    wasteReduction: "40%",
+    matchScore: 40,
     description: "Protein-packed vegetable frittata",
+    steps: [{ title: "炒蔬菜", description: "將菠菜與番茄略炒。" }, { title: "煎蛋餅", description: "倒入蛋液煎至金黃。" }]
   },
   {
     id: "mediterranean-salad",
@@ -47,8 +52,9 @@ export const recipeDatabase: Recipe[] = [
     category: "vegetable",
     requiredIngredients: ["Spinach", "Tomatoes"],
     optionalIngredients: ["Cucumber", "Feta Cheese", "Olives"],
-    wasteReduction: "30%",
+    matchScore: 30,
     description: "Fresh and healthy Mediterranean bowl",
+    steps: [{ title: "準備食材", description: "將所有蔬菜切丁。" }, { title: "拌勻", description: "加入橄欖油與起司拌勻。" }]
   },
   {
     id: "veggie-stir-fry",
@@ -59,8 +65,9 @@ export const recipeDatabase: Recipe[] = [
     category: "vegetable",
     requiredIngredients: ["Spinach", "Tomatoes", "Celery"],
     optionalIngredients: ["Soy Sauce", "Ginger", "Garlic"],
-    wasteReduction: "45%",
+    matchScore: 45,
     description: "Quick and flavorful Asian-style stir-fry",
+    steps: [{ title: "熱鍋", description: "爆香大蒜與生薑。" }, { title: "快炒", description: "快速拌炒所有食材。" }]
   },
   {
     id: "roasted-vegetables",
@@ -71,8 +78,9 @@ export const recipeDatabase: Recipe[] = [
     category: "vegetable",
     requiredIngredients: ["Tomatoes"],
     optionalIngredients: ["Bell Peppers", "Zucchini", "Olive Oil"],
-    wasteReduction: "38%",
+    matchScore: 38,
     description: "Colorful oven-roasted vegetables",
+    steps: [{ title: "預熱", description: "烤箱預熱至 200度。" }, { title: "烘烤", description: "將蔬菜淋油後烘烤 20分鐘。" }]
   },
 
   // Fruit Recipes
@@ -85,8 +93,9 @@ export const recipeDatabase: Recipe[] = [
     category: "fruit",
     requiredIngredients: ["Apple", "Banana", "Orange"],
     optionalIngredients: ["Honey", "Mint", "Berries"],
-    wasteReduction: "25%",
+    matchScore: 25,
     description: "Fresh and vibrant fruit medley",
+    steps: [{ title: "切塊", description: "將所有水果切成一口大小。" }]
   },
   {
     id: "berry-smoothie",
@@ -97,8 +106,9 @@ export const recipeDatabase: Recipe[] = [
     category: "fruit",
     requiredIngredients: ["Banana", "Strawberry"],
     optionalIngredients: ["Blueberry", "Yogurt", "Granola"],
-    wasteReduction: "30%",
+    matchScore: 30,
     description: "Nutritious and delicious smoothie bowl",
+    steps: [{ title: "攪打", description: "將食材放入果汁機攪碎。" }]
   },
 
   // Meat Recipes
@@ -111,8 +121,9 @@ export const recipeDatabase: Recipe[] = [
     category: "meat",
     requiredIngredients: ["Chicken"],
     optionalIngredients: ["Rosemary", "Garlic", "Lemon"],
-    wasteReduction: "20%",
+    matchScore: 20,
     description: "Juicy herb-marinated grilled chicken",
+    steps: [{ title: "醃製", description: "用香料醃製雞肉 30分鐘。" }, { title: "燒烤", description: "將雞肉烤至全熟。" }]
   },
   {
     id: "beef-stir-fry",
@@ -123,8 +134,9 @@ export const recipeDatabase: Recipe[] = [
     category: "meat",
     requiredIngredients: ["Beef"],
     optionalIngredients: ["Bell Peppers", "Onions", "Soy Sauce"],
-    wasteReduction: "28%",
+    matchScore: 28,
     description: "Savory beef with crisp vegetables",
+    steps: [{ title: "醃肉", description: "將牛肉切片並醃漬。" }, { title: "熱炒", description: "大火快炒肉片與配菜。" }]
   },
 
   // Mixed Recipes (Meat + Vegetables)
@@ -137,8 +149,9 @@ export const recipeDatabase: Recipe[] = [
     category: "mixed",
     requiredIngredients: ["Chicken", "Tomatoes"],
     optionalIngredients: ["Spinach", "Carrots", "Potatoes"],
-    wasteReduction: "42%",
+    matchScore: 42,
     description: "Complete meal with protein and veggies",
+    steps: [{ title: "準備", description: "將所有食材切塊。" }, { title: "烹煮", description: "放入鍋中燉煮至食材軟爛。" }]
   },
 ];
 
