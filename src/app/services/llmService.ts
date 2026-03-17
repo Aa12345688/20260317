@@ -301,29 +301,40 @@ class LLMService {
         });
     }
 
-    getKeyStatusList(): { masked: string; coolingDown: boolean; cooldownRemaining: number }[] {
+    getKeyStatusList(): { masked: string; coolingDown: boolean; cooldownRemaining: number; isCustom: boolean }[] {
+        const customKeys = this.customApiKeys.map(k => k.trim());
         return this.getApiKeys().map(key => {
             const coolingDown = this.isKeyCoolingDown(key);
             const cooldownRemaining = coolingDown
                 ? Math.ceil((this.keyCooldowns[key] - Date.now()) / 1000)
                 : 0;
             const masked = key.length <= 8 ? "****" : `${key.slice(0, 4)}...${key.slice(-4)}`;
-            return { masked, coolingDown, cooldownRemaining };
+            const isCustom = customKeys.includes(key);
+            return { masked, coolingDown, cooldownRemaining, isCustom };
         });
     }
 
-    async testConnection(): Promise<{ status: 'online' | 'offline' | 'no_key', model: string, keyCount: number }> {
+    getActiveKeyInfo(): string | null {
+        const apiKeys = this.getApiKeys();
+        if (apiKeys.length === 0) return null;
+        const key = apiKeys[this.apiKeyIndex];
+        return key.length <= 8 ? "****" : `${key.slice(0, 4)}...${key.slice(-4)}`;
+    }
+
+    async testConnection(): Promise<{ status: 'online' | 'offline' | 'no_key', model: string, keyCount: number, activeKey: string | null }> {
         const keys = this.getApiKeys();
-        if (keys.length === 0) return { status: 'no_key', model: GEMINI_MODELS[0], keyCount: 0 };
+        if (keys.length === 0) return { status: 'no_key', model: GEMINI_MODELS[0], keyCount: 0, activeKey: null };
 
         try {
-            await this.scheduledRequest(() => ({
+            // Test with a very small request
+            await this.baseRequest(GEMINI_MODELS[0], keys[0], {
                 contents: [{ parts: [{ text: "ping" }] }],
                 generationConfig: { maxOutputTokens: 1 }
-            }));
-            return { status: 'online', model: GEMINI_MODELS[0], keyCount: keys.length };
+            });
+            return { status: 'online', model: GEMINI_MODELS[0], keyCount: keys.length, activeKey: this.getActiveKeyInfo() };
         } catch (e) {
-            return { status: 'offline', model: GEMINI_MODELS[0], keyCount: keys.length };
+            console.warn("[LLM] Connection test failed:", e);
+            return { status: 'offline', model: GEMINI_MODELS[0], keyCount: keys.length, activeKey: null };
         }
     }
 

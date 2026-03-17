@@ -864,17 +864,26 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                             <h4 className="text-[7px] font-black text-white/20 uppercase tracking-widest px-1">即時節點監控 (Nodes Monitor)</h4>
                             <div className="grid grid-cols-1 gap-1.5">
                                 {llmService.getKeyStatusList().length > 0 ? (
-                                    llmService.getKeyStatusList().map((keyInfo, idx) => (
-                                        <div key={idx} className={`flex items-center justify-between px-3 py-2 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : 'bg-black/20 border-white/5'}`}>
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-primary'}`} />
-                                                <span className="text-[9px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
+                                    llmService.getKeyStatusList().map((keyInfo, idx) => {
+                                        const isActive = llmService.getActiveKeyInfo() === keyInfo.masked;
+                                        return (
+                                            <div key={idx} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : isActive ? 'bg-primary/10 border-primary/30 shadow-[0_0_15px_rgba(0,255,136,0.1)]' : 'bg-black/20 border-white/5'}`}>
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-primary'} ${isActive ? 'shadow-[0_0_8px_rgba(0,255,136,0.8)]' : ''}`} />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[9px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
+                                                        {keyInfo.isCustom && <span className="text-[6px] font-black text-primary/60 uppercase tracking-tighter">使用者自定義金鑰</span>}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    {isActive && !keyInfo.coolingDown && <div className="text-[7px] font-black text-primary bg-primary/20 px-1.5 py-0.5 rounded-sm uppercase tracking-widest animate-pulse">In Use</div>}
+                                                    <div className={`text-[7px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-primary opacity-40'}`}>
+                                                        {keyInfo.coolingDown ? `Cooldown ${keyInfo.cooldownRemaining}s` : 'Verified'}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className={`text-[7px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-primary opacity-40'}`}>
-                                                {keyInfo.coolingDown ? `Cooldown ${keyInfo.cooldownRemaining}s` : 'Active'}
-                                            </div>
-                                        </div>
-                                    ))
+                                        );
+                                    })
                                 ) : (
                                     <div className="text-[9px] font-bold text-red-500/40 uppercase tracking-widest p-3 bg-red-500/5 rounded-xl border border-red-500/10 text-center">未偵測到有效節點</div>
                                 )}

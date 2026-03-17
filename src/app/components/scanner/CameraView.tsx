@@ -86,7 +86,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
 
         initModel();
         return () => window.removeEventListener('offline', handleOffline);
-    }, [scanMode]);
+    }, []);
 
     const handleScan = async () => {
         if (scanMode === "local") {
