@@ -36,12 +36,12 @@ export function BottomNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-full transition-all duration-300 group ${isActive ? "text-[#00ff88]" : "text-white/40 hover:text-white"
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-full transition-all duration-300 group ${isActive ? "text-primary" : "text-white/40 hover:text-white"
                 }`}
             >
               {/* 如果正在該分頁內，顯示微微的背景綠色光暈 */}
               {isActive && (
-                <div className="absolute inset-0 bg-[#00ff88]/10 rounded-full animate-in fade-in zoom-in duration-300" />
+                <div className="absolute inset-0 bg-primary/10 rounded-full animate-in fade-in zoom-in duration-300" />
               )}
               {/* 按鈕圖示 (Lucide React) */}
               <Icon size={16} strokeWidth={isActive ? 3 : 2} className="relative z-10" />
@@ -51,7 +51,7 @@ export function BottomNav() {
               </span>
               {/* 當前頁面的高亮霓虹光點指示器 */}
               {isActive && (
-                <div className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#00ff88] rounded-full shadow-[0_0_10px_#00ff88]" />
+                <div className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_10px_#00ff88]" />
               )}
             </button>
           );

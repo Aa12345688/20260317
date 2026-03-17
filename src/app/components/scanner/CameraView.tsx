@@ -240,17 +240,17 @@ export function CameraView({ videoRef }: CameraViewProps) {
         <div className="flex flex-col items-center w-full max-w-sm">
             <div className="relative w-full">
                 {/* 掃描模式切換器 */}
-                <div className="flex bg-[#0f2e24]/60 backdrop-blur-xl rounded-2xl p-1 mb-4 border border-[#00ff88]/20 self-center w-fit mx-auto">
+                <div className="flex bg-[#0f2e24]/60 backdrop-blur-xl rounded-2xl p-1 mb-4 border border-primary/20 self-center w-fit mx-auto">
                     <button
                         onClick={() => setScanMode("local")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "local" ? 'bg-[#00ff88] text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-[#00ff88]/60 hover:text-[#00ff88]'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "local" ? 'bg-primary text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-primary/60 hover:text-primary'}`}
                     >
                         <Brain size={14} />
                         YOLO 本地辨識
                     </button>
                     <button
                         onClick={() => setScanMode("cloud")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "cloud" ? 'bg-[#00ff88] text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-[#00ff88]/60 hover:text-[#00ff88]'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "cloud" ? 'bg-primary text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-primary/60 hover:text-primary'}`}
                     >
                         <Sparkles size={14} />
                         Gemini 雲端辨識
@@ -258,9 +258,9 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 </div>
 
                 {/* AI Status Badge */}
-                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[#0f2e24]/80 backdrop-blur-md border ${!navigator.onLine && scanMode === "cloud" ? 'border-red-500' : !modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-[#00ff88]'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-colors duration-500`}>
-                    <div className={`w-2 h-2 rounded-full ${!navigator.onLine && scanMode === "cloud" ? 'bg-red-500 animate-pulse' : !modelLoaded && scanMode === "local" ? 'bg-red-400' : isScanning ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'} shadow-[0_0_8px_currentColor]`} />
-                    <span className={`text-[10px] font-black tracking-widest ${!navigator.onLine && scanMode === "cloud" ? 'text-red-500' : !modelLoaded && scanMode === "local" ? 'text-red-400' : isScanning ? 'text-amber-400' : 'text-[#00ff88]'} uppercase`}>
+                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[#0f2e24]/80 backdrop-blur-md border ${!navigator.onLine && scanMode === "cloud" ? 'border-red-500' : !modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-primary'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-colors duration-500`}>
+                    <div className={`w-2 h-2 rounded-full ${!navigator.onLine && scanMode === "cloud" ? 'bg-red-500 animate-pulse' : !modelLoaded && scanMode === "local" ? 'bg-red-400' : isScanning ? 'bg-amber-400 animate-pulse' : 'bg-primary'} shadow-[0_0_8px_currentColor]`} />
+                    <span className={`text-[10px] font-black tracking-widest ${!navigator.onLine && scanMode === "cloud" ? 'text-red-500' : !modelLoaded && scanMode === "local" ? 'text-red-400' : isScanning ? 'text-amber-400' : 'text-primary'} uppercase`}>
                         {!navigator.onLine && scanMode === "cloud" ? "偵測到離線：無法使用雲端 AI" : scanMode === "cloud" ? (isScanning ? "Cloud AI 串接中..." : "Gemini 視覺系統已就緒") : (!modelLoaded ? "系統核心啟動中..." : isScanning ? "正在為您辨識..." : "掃描系統已就緒")}
                     </span>
                 </div>
@@ -292,7 +292,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                                     borderRadius: '8px'
                                 }}
                             >
-                                <div className={`absolute -top-6 left-0 px-2 py-0.5 rounded-t-md text-[8px] font-black uppercase whitespace-nowrap ${boxData.isSpoiled ? 'bg-red-500 text-white' : 'bg-[#00ff88] text-[#0f2e24]'}`}>
+                                <div className={`absolute -top-6 left-0 px-2 py-0.5 rounded-t-md text-[8px] font-black uppercase whitespace-nowrap ${boxData.isSpoiled ? 'bg-red-500 text-white' : 'bg-primary text-[#0f2e24]'}`}>
                                     {boxData.isSpoiled ? 'BAD' : 'GOOD'} | {boxData.name} | {Math.round((boxData.confidence || 0) * 100)}%
                                 </div>
                             </div>
@@ -302,7 +302,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                     <div className="absolute inset-0 bg-gradient-to-b from-[#0f2e24]/40 to-transparent pointer-events-none" />
 
                     {isScanning && (
-                        <div className="absolute inset-0 bg-[#00ff88]/5 flex flex-col items-center justify-center">
+                        <div className="absolute inset-0 bg-primary/5 flex flex-col items-center justify-center">
                             <div className="w-full h-[2px] bg-amber-400 shadow-[0_0_15px_#fbbf24] absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
                         </div>
                     )}
@@ -327,7 +327,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 <button
                     onClick={handleScan}
                     disabled={isScanning || (scanMode === "local" && !modelLoaded)}
-                    className="w-full bg-[#00ff88] text-[#0f2e24] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-[#00dd77] transition-all active:scale-[0.98] shadow-[0_8px_20px_rgba(0,255,136,0.3)] disabled:opacity-50"
+                    className="w-full bg-primary text-[#0f2e24] py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-[#00dd77] transition-all active:scale-[0.98] shadow-[0_8px_20px_rgba(0,255,136,0.3)] disabled:opacity-50"
                 >
                     {isScanning ? <Loader2 size={24} className="animate-spin" /> : scanMode === "cloud" ? <Sparkles size={24} strokeWidth={3} /> : <Camera size={24} strokeWidth={3} />}
                     {isScanning ? "正在為您分析清單..." : scanMode === "cloud" ? "使用 Gemini 深度辨識" : "開始掃描並識別"}

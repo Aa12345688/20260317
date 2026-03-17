@@ -68,14 +68,14 @@ export function Ingredients() {
             <button onClick={() => navigate(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[#0d231b]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
             <div className="px-6 py-4">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] px-1 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-[#00ff88]" />掃描紀錄</h2>
+                    <h2 className="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] px-1 flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary" />掃描紀錄</h2>
                     <button onClick={clearAll} className="p-2 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-xl border border-red-500/10 text-red-500 transition-all"><Trash2 size={16} /></button>
                 </div>
                 {scannedItems.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-24 text-center bg-white/5 rounded-[3.5rem] border border-white/5">
-                        <div className="relative mb-8 group"><div className="absolute inset-0 bg-[#00ff88]/5 rounded-full blur-3xl" /><div className="relative w-24 h-24 bg-[#1a4d3d]/50 rounded-[2rem] border border-white/10 flex items-center justify-center shadow-2xl"><Plus size={40} className="text-[#00ff88]/20" /></div></div>
+                        <div className="relative mb-8 group"><div className="absolute inset-0 bg-primary/5 rounded-full blur-3xl" /><div className="relative w-24 h-24 bg-[#1a4d3d]/50 rounded-[2rem] border border-white/10 flex items-center justify-center shadow-2xl"><Plus size={40} className="text-primary/20" /></div></div>
                         <h3 className="text-sm font-black text-white/30 uppercase tracking-widest mb-4">目前無數據暫存</h3>
-                        <button onClick={() => navigate("/")} className="flex items-center gap-3 bg-[#00ff88] text-[#0f2e24] px-8 py-4 rounded-2xl font-black uppercase text-[10px] shadow-xl">啟動感測器</button>
+                        <button onClick={() => navigate("/")} className="flex items-center gap-3 bg-primary text-background px-8 py-4 rounded-2xl font-black uppercase text-[10px] shadow-xl">啟動感測器</button>
                     </div>
                 ) : (
                     <div className="space-y-3">{scannedItems.slice(0, 10).map((item) => (<DetectionRow key={item.id} item={item} onUpdate={updateQuantity} onRemove={removeItem} />))}</div>
@@ -118,7 +118,7 @@ export function Recipes() {
             <div className="px-6 py-4">
                 <IngredientCloud items={scannedItems} onAddMore={() => navigate("/inventory")} />
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-16 gap-4 bg-white/5 rounded-[2.5rem] border border-white/10"><div className="relative w-14 h-14"><div className="absolute inset-0 border-2 border-[#00ff88]/20 rounded-full" /><div className="absolute inset-0 border-2 border-[#00ff88] border-t-transparent rounded-full animate-spin" /><Sparkles className="absolute inset-0 m-auto text-[#00ff88] animate-pulse" size={18} /></div><div className="text-center"><h3 className="text-[#00ff88] font-black text-[10px] uppercase animate-pulse mb-1">運算中...</h3><p className="text-gray-500 text-[8px] font-bold uppercase">正在分析口味分佈</p></div></div>
+                    <div className="flex flex-col items-center justify-center py-16 gap-4 bg-white/5 rounded-[2.5rem] border border-white/10"><div className="relative w-14 h-14"><div className="absolute inset-0 border-2 border-primary/20 rounded-full" /><div className="absolute inset-0 border-2 border-primary border-t-transparent rounded-full animate-spin" /><Sparkles className="absolute inset-0 m-auto text-primary animate-pulse" size={18} /></div><div className="text-center"><h3 className="text-primary font-black text-[10px] uppercase animate-pulse mb-1">運算中...</h3><p className="text-gray-500 text-[8px] font-bold uppercase">正在分析口味分佈</p></div></div>
                 ) : recommendedRecipes.length > 0 ? (
                     <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-3">
@@ -128,7 +128,7 @@ export function Recipes() {
                         </div>
                     </div>
                 ) : (
-                    <div className="text-center py-20 px-6 bg-white/5 rounded-[2.5rem] border-2 border-dashed border-white/5"><div className="w-16 h-16 mx-auto mb-4 bg-[#00ff88]/5 rounded-full flex items-center justify-center"><ChefHat size={32} className="text-[#00ff88]/20" /></div><h4 className="text-white font-black text-xs uppercase mb-2">未發現相容方案</h4><button onClick={() => navigate("/")} className="inline-flex items-center gap-2 px-6 py-3 bg-[#00ff88] text-[#0f2e24] rounded-2xl font-black uppercase text-[9px]">返回掃描</button></div>
+                    <div className="text-center py-20 px-6 bg-white/5 rounded-[2.5rem] border-2 border-dashed border-white/5"><div className="w-16 h-16 mx-auto mb-4 bg-primary/5 rounded-full flex items-center justify-center"><ChefHat size={32} className="text-primary/20" /></div><h4 className="text-white font-black text-xs uppercase mb-2">未發現相容方案</h4><button onClick={() => navigate("/")} className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background rounded-2xl font-black uppercase text-[9px]">返回掃描</button></div>
                 )}
             </div>
         </div>
@@ -157,40 +157,40 @@ function EditItemModal({ item, onSave, onDismiss }: { item: any, onSave: (id: st
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-[#0f2e24]/90 backdrop-blur-xl flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-xl flex items-center justify-center p-6">
             <div className="bg-[#1a4d3d] w-full max-w-sm rounded-[2.5rem] p-6 border border-white/10 shadow-2xl relative">
                 <button onClick={onDismiss} className="absolute right-6 top-6 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-500 hover:text-white">
                     <X size={16} />
                 </button>
-                <div className="w-12 h-12 bg-[#00ff88]/10 rounded-2xl flex items-center justify-center mb-6">
-                    <Edit2 size={24} className="text-[#00ff88]" />
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                    <Edit2 size={24} className="text-primary" />
                 </div>
                 <h3 className="text-xl font-black text-white uppercase tracking-wider mb-6">編輯食材資訊</h3>
 
                 <div className="space-y-4 mb-8">
                     <div>
                         <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">食材名稱</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0f2e24] border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-[#00ff88] outline-none transition-colors" />
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-background border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-primary outline-none transition-colors" />
                     </div>
                     <div>
                         <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">分類標籤</label>
                         <div className="flex flex-wrap gap-2">
                             {["蔬菜", "水果", "肉類", "乳製品", "五穀", "其他"].map(c => (
-                                <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase border transition-all ${category === c ? 'bg-[#00ff88] text-[#0f2e24] border-[#00ff88]' : 'bg-white/5 text-gray-400 border-white/10'}`}>{c}</button>
+                                <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase border transition-all ${category === c ? 'bg-primary text-background border-primary' : 'bg-white/5 text-gray-400 border-white/10'}`}>{c}</button>
                             ))}
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">保存位置</label>
-                            <div className="flex bg-[#0f2e24] p-1 rounded-xl border border-white/10">
+                            <div className="flex bg-background p-1 rounded-xl border border-white/10">
                                 <button onClick={() => setStorageType('fridge')} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center justify-center gap-1 ${storageType === 'fridge' ? 'bg-white/10 text-white' : 'text-gray-500'}`}><ChefHat size={12} />冷藏</button>
                                 <button onClick={() => setStorageType('freezer')} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center justify-center gap-1 ${storageType === 'freezer' ? 'bg-blue-500/20 text-blue-300' : 'text-gray-500'}`}><Snowflake size={12} />冷凍</button>
                             </div>
                         </div>
                         <div>
                             <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">保鮮期 (天)</label>
-                            <input type="number" min="0" value={expiryDays} onChange={(e) => setExpiryDays(parseInt(e.target.value) || 0)} className="w-full bg-[#0f2e24] border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-[#00ff88] outline-none transition-colors text-center" />
+                            <input type="number" min="0" value={expiryDays} onChange={(e) => setExpiryDays(parseInt(e.target.value) || 0)} className="w-full bg-background border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-primary outline-none transition-colors text-center" />
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,7 @@ function EditItemModal({ item, onSave, onDismiss }: { item: any, onSave: (id: st
                         </div>
                     )}
 
-                    <button onClick={handleConfirmSave} className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 ${confirmingZero ? 'bg-red-500 text-white' : 'bg-[#00ff88] text-[#0f2e24]'}`}>
+                    <button onClick={handleConfirmSave} className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 ${confirmingZero ? 'bg-red-500 text-white' : 'bg-primary text-background'}`}>
                         {confirmingZero ? '確定標記為過期' : '更新資料 (Update)'}
                     </button>
                     {confirmingZero && (
@@ -260,13 +260,13 @@ export function Inventory() {
             {/* Minimal Floating Back Button */}
             <button onClick={() => navigate(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[#0d231b]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
             <div className="flex justify-end px-4 mb-2">
-                <button onClick={() => setShowForm(!showForm)} className="p-2 bg-[#00ff88] rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Plus size={20} className="text-[#0f2e24] stroke-[3]" /></button>
+                <button onClick={() => setShowForm(!showForm)} className="p-2 bg-primary rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Plus size={20} className="text-background stroke-[3]" /></button>
             </div>
 
             <div className="sticky top-2 z-20 pb-2 px-4 py-2">
                 <div className="flex bg-[#0d231b]/60 backdrop-blur-xl p-1 rounded-full border border-white/10 shadow-lg">
-                    <button onClick={() => setStorageTab('fridge')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'fridge' ? 'bg-[#00ff88] text-[#0f2e24]' : 'text-gray-400'}`}><ChefHat size={16} />冷藏庫</button>
-                    <button onClick={() => setStorageTab('freezer')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'freezer' ? 'bg-blue-400 text-[#0f2e24]' : 'text-gray-400'}`}><Snowflake size={16} />冷凍庫</button>
+                    <button onClick={() => setStorageTab('fridge')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'fridge' ? 'bg-primary text-background' : 'text-gray-400'}`}><ChefHat size={16} />冷藏庫</button>
+                    <button onClick={() => setStorageTab('freezer')} className={`flex-1 py-2.5 rounded-full text-xs font-black uppercase transition-all flex items-center justify-center gap-2 ${storageTab === 'freezer' ? 'bg-blue-400 text-background' : 'text-gray-400'}`}><Snowflake size={16} />冷凍庫</button>
                 </div>
             </div>
 
@@ -286,7 +286,7 @@ export function Inventory() {
                         }
                     }}
                     disabled={isGenerating || selectedIds.length === 0}
-                    className={`w-full ${storageTab === 'fridge' ? 'bg-[#00ff88]' : 'bg-blue-400'} text-[#0f2e24] py-3.5 rounded-full font-black text-xs uppercase tracking-widest shadow-[0_15px_30px_rgba(0,0,0,0.4)] flex items-center justify-center gap-2.5 disabled:opacity-50 transition-all hover:scale-[1.02] hover:translate-y-[-2px] active:scale-[0.98]`}
+                    className={`w-full ${storageTab === 'fridge' ? 'bg-primary' : 'bg-blue-400'} text-background py-3.5 rounded-full font-black text-xs uppercase tracking-widest shadow-[0_15px_30px_rgba(0,0,0,0.4)] flex items-center justify-center gap-2.5 disabled:opacity-50 transition-all hover:scale-[1.02] hover:translate-y-[-2px] active:scale-[0.98]`}
                 >
                     {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
                     {isGenerating ? "Synthesizing..." : "生成 AI 食譜方案"}
@@ -319,24 +319,24 @@ export function Inventory() {
                                         <button
                                             onClick={() => toggleSelection(i.id)}
                                             disabled={i.isSpoiled || isExpired}
-                                            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${i.isSpoiled || isExpired ? 'opacity-20 cursor-not-allowed border-gray-600' : selectedIds.includes(i.id) ? (storageTab === 'fridge' ? 'bg-[#00ff88] border-[#00ff88]' : 'bg-blue-400 border-blue-400') : 'bg-transparent border-white/20'}`}
+                                            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${i.isSpoiled || isExpired ? 'opacity-20 cursor-not-allowed border-gray-600' : selectedIds.includes(i.id) ? (storageTab === 'fridge' ? 'bg-primary border-primary' : 'bg-blue-400 border-blue-400') : 'bg-transparent border-white/20'}`}
                                         >
-                                            {selectedIds.includes(i.id) && !i.isSpoiled && !isExpired && <div className="w-3 h-3 bg-[#0f2e24] rounded-sm" />}
+                                            {selectedIds.includes(i.id) && !i.isSpoiled && !isExpired && <div className="w-3 h-3 bg-background rounded-sm" />}
                                             {(i.isSpoiled || isExpired) && <X size={12} className="text-red-500" />}
                                         </button>
 
-                                        <div className="w-10 h-10 rounded-lg bg-[#0f2e24] flex items-center justify-center flex-shrink-0 relative">
-                                            <Package size={18} className={i.isSpoiled || isExpired ? "text-red-500" : storageTab === 'fridge' ? "text-[#00ff88]" : "text-blue-400"} />
+                                        <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center flex-shrink-0 relative">
+                                            <Package size={18} className={i.isSpoiled || isExpired ? "text-red-500" : storageTab === 'fridge' ? "text-primary" : "text-blue-400"} />
                                             {(i.isSpoiled || isExpired) && <div className="absolute inset-0 bg-red-500/10 rounded-xl" />}
                                         </div>
 
                                         <div className="flex-1 min-w-0">
                                             <h4 className={`font-black text-sm truncate uppercase ${i.isSpoiled || isExpired ? 'text-red-500/70 line-through' : 'text-white'}`}>{i.name}</h4>
                                             <div className="flex flex-wrap items-center gap-2 mt-1">
-                                                <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md ${i.isSpoiled ? 'bg-red-500/10 text-red-500' : storageTab === 'fridge' ? 'bg-[#00ff88]/10 text-[#00ff88]' : 'bg-blue-400/10 text-blue-400'}`}>
+                                                <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md ${i.isSpoiled ? 'bg-red-500/10 text-red-500' : storageTab === 'fridge' ? 'bg-primary/10 text-primary' : 'bg-blue-400/10 text-blue-400'}`}>
                                                     {i.isSpoiled ? "品質異常" : (i.category || "其他")}
                                                 </span>
-                                                <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 ${isExpired || i.isSpoiled ? 'bg-red-500 text-white' : isWarning ? 'bg-amber-400 text-[#0f2e24]' : 'bg-white/5 text-gray-400'}`}>
+                                                <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 ${isExpired || i.isSpoiled ? 'bg-red-500 text-white' : isWarning ? 'bg-amber-400 text-background' : 'bg-white/5 text-gray-400'}`}>
                                                     <Clock size={8} />
                                                     {isExpired ? "已過期 (EXPIRED)" : i.isSpoiled ? "偵測毀損" : isWarning ? `即將到期 (${daysLeft}天)` : `保鮮 ${daysLeft} 天`}
                                                 </span>
@@ -356,10 +356,10 @@ export function Inventory() {
                                     </div>
 
                                     <div className="flex items-center justify-end gap-1.5 border-t border-white/5 pt-1.5 mt-1.5">
-                                        <div className="flex items-center bg-[#0f2e24]/80 rounded-full p-0.5 border border-white/10">
-                                            <button onClick={() => updateQuantity(i.id, -1)} className={`w-6 h-6 flex items-center justify-center text-gray-400 hover:${storageTab === 'fridge' ? 'text-[#00ff88]' : 'text-blue-400'}`}><Minus size={10} strokeWidth={3} /></button>
+                                        <div className="flex items-center bg-background/80 rounded-full p-0.5 border border-white/10">
+                                            <button onClick={() => updateQuantity(i.id, -1)} className={`w-6 h-6 flex items-center justify-center text-gray-400 hover:${storageTab === 'fridge' ? 'text-primary' : 'text-blue-400'}`}><Minus size={10} strokeWidth={3} /></button>
                                             <span className="w-6 text-center font-black text-white text-[10px]">{i.quantity}</span>
-                                            <button onClick={() => updateQuantity(i.id, 1)} className={`w-6 h-6 flex items-center justify-center text-gray-400 hover:${storageTab === 'fridge' ? 'text-[#00ff88]' : 'text-blue-400'}`}><Plus size={10} strokeWidth={3} /></button>
+                                            <button onClick={() => updateQuantity(i.id, 1)} className={`w-6 h-6 flex items-center justify-center text-gray-400 hover:${storageTab === 'fridge' ? 'text-primary' : 'text-blue-400'}`}><Plus size={10} strokeWidth={3} /></button>
                                         </div>
                                         <button onClick={() => removeIngredient(i.id)} className="w-7 h-7 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-all hover:bg-red-500 hover:text-white"><Trash2 size={10} strokeWidth={3} /></button>
                                     </div>
@@ -367,7 +367,7 @@ export function Inventory() {
                                     {isWarning && !isExpired && (
                                         <div className="absolute top-0 right-0 w-8 h-8 overflow-hidden">
                                             <div className="absolute top-[-10px] right-[-10px] bg-amber-400 w-12 h-12 rotate-45 transform origin-bottom-left flex items-end justify-center pb-1">
-                                                <AlertTriangle size={8} className="text-[#0f2e24] -rotate-45" strokeWidth={3} />
+                                                <AlertTriangle size={8} className="text-background -rotate-45" strokeWidth={3} />
                                             </div>
                                         </div>
                                     )}
@@ -440,11 +440,11 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
 
     return (
         <div className="bg-[#0d231b]/60 backdrop-blur-xl rounded-[2rem] p-5 border border-white/10 mb-6 relative overflow-hidden group shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
-            <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#00ff88]/10 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/10 rounded-full blur-[60px] pointer-events-none" />
 
             <div className="flex items-center justify-between mb-6 relative z-20">
                 <div>
-                    <h3 className="text-[10px] font-black text-[#00ff88] uppercase tracking-[0.2em] mb-1">食材損耗分析 (Waste Analytics)</h3>
+                    <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">食材損耗分析 (Waste Analytics)</h3>
                     <div className="flex items-center gap-3">
                         <div className="flex flex-col">
                             <div className="text-xl font-black text-white tracking-tighter">{sustainabilityIndex}%</div>
@@ -458,9 +458,9 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
                         )}
                     </div>
                 </div>
-                <div className="flex bg-[#0f2e24] p-1 rounded-xl border border-white/10">
-                    <button onClick={() => setTab("history")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "history" ? "bg-[#00ff88] text-[#0f2e24]" : "text-gray-500"}`}>歷史</button>
-                    <button onClick={() => setTab("predict")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "predict" ? "bg-amber-400 text-[#0f2e24]" : "text-gray-500"}`}>預測</button>
+                <div className="flex bg-background p-1 rounded-xl border border-white/10">
+                    <button onClick={() => setTab("history")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "history" ? "bg-primary text-background" : "text-gray-500"}`}>歷史</button>
+                    <button onClick={() => setTab("predict")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "predict" ? "bg-amber-400 text-background" : "text-gray-500"}`}>預測</button>
                 </div>
             </div>
 
@@ -503,10 +503,10 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
                                         className={`flex-1 flex flex-col items-center gap-2 group/bar relative cursor-pointer transition-transform ${selectedDate === d.date ? 'scale-110' : 'hover:scale-105'}`}
                                     >
                                         <div className="absolute top-0 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 -translate-y-4 group-hover/bar:-translate-y-2 flex flex-col items-center z-30">
-                                            <span className="bg-[#00ff88] text-[#0f2e24] text-[8px] font-black px-2 py-1 rounded-lg tracking-widest shadow-[0_0_15px_rgba(0,255,136,0.3)] whitespace-nowrap">
+                                            <span className="bg-primary text-background text-[8px] font-black px-2 py-1 rounded-lg tracking-widest shadow-[0_0_15px_rgba(0,255,136,0.3)] whitespace-nowrap">
                                                 浪費 {d.amount}
                                             </span>
-                                            <div className="w-1.5 h-1.5 bg-[#00ff88] rotate-45 -mt-1" />
+                                            <div className="w-1.5 h-1.5 bg-primary rotate-45 -mt-1" />
                                         </div>
                                         <div className="relative w-full flex items-end justify-center">
                                             <motion.div
@@ -609,9 +609,9 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
 
                                     {/* 視覺化分佈進度條 */}
                                     <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden flex shadow-inner mb-4">
-                                        {riskItems.length > 0 && <div style={{ width: getWidth(riskItems.length) }} className="bg-red-500 transition-all duration-1000 animate-pulse border-r border-[#0f2e24]" />}
-                                        {warningItems.length > 0 && <div style={{ width: getWidth(warningItems.length) }} className="bg-amber-400 transition-all duration-1000 border-r border-[#0f2e24]" />}
-                                        {safeItems.length > 0 && <div style={{ width: getWidth(safeItems.length) }} className="bg-[#00ff88] transition-all duration-1000 border-r border-[#0f2e24]" />}
+                                        {riskItems.length > 0 && <div style={{ width: getWidth(riskItems.length) }} className="bg-red-500 transition-all duration-1000 animate-pulse border-r border-background" />}
+                                        {warningItems.length > 0 && <div style={{ width: getWidth(warningItems.length) }} className="bg-amber-400 transition-all duration-1000 border-r border-background" />}
+                                        {safeItems.length > 0 && <div style={{ width: getWidth(safeItems.length) }} className="bg-primary transition-all duration-1000 border-r border-background" />}
                                         {(total - riskItems.length - warningItems.length - safeItems.length > 0) && <div style={{ width: getWidth(total - riskItems.length - warningItems.length - safeItems.length) }} className="bg-gray-600 transition-all duration-1000" />}
                                     </div>
 
@@ -627,9 +627,9 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
                                             <div className="text-lg font-black text-amber-400">{warningItems.length}</div>
                                             <div className="text-[7px] text-gray-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">{warningItems.length > 0 ? "準備排入計畫" : "暫無疑慮"}</div>
                                         </div>
-                                        <div className="bg-white/5 rounded-xl p-3 border text-left border-[#00ff88]/20 relative">
+                                        <div className="bg-white/5 rounded-xl p-3 border text-left border-primary/20 relative">
                                             <div className="text-[8px] font-black text-gray-500 uppercase mb-1">&gt; 5 天 (安全)</div>
-                                            <div className="text-lg font-black text-[#00ff88]">{safeItems.length}</div>
+                                            <div className="text-lg font-black text-primary">{safeItems.length}</div>
                                             <div className="text-[7px] text-gray-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">庫存穩定</div>
                                         </div>
                                     </div>
@@ -654,7 +654,7 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
                     >
                         <div className="mt-4 pt-4 border-t border-white/5 bg-black/20 rounded-2xl p-4">
                             <div className="flex items-center justify-between mb-3">
-                                <div className="text-[8px] font-black text-[#00ff88] uppercase tracking-widest flex items-center gap-2">
+                                <div className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-2">
                                     <Clock size={10} /> {selectedDate} 浪費清單
                                 </div>
                                 <button onClick={() => setSelectedDate(null)} className="text-[8px] font-black text-gray-500 uppercase">返回</button>
@@ -680,7 +680,7 @@ function NeuralAnalyticsDashboard({ data, scannedItems }: { data: any[], scanned
                         <div className="text-[6px] font-bold text-gray-500 uppercase">累積損耗</div>
                     </div>
                     <div>
-                        <div className="text-[10px] font-black text-[#00ff88]">{sustainabilityIndex}%</div>
+                        <div className="text-[10px] font-black text-primary">{sustainabilityIndex}%</div>
                         <div className="text-[6px] font-bold text-gray-500 uppercase">環保等級 (Eco)</div>
                     </div>
                 </div>
@@ -713,7 +713,7 @@ export function Profile() {
 
     const settingsGrid = [
         { id: 'api', label: "神經節點", desc: "API & Model", icon: Sparkles, color: "text-purple-400", bg: "bg-purple-500/10" },
-        { id: 'dietary', label: "飲食偏好", desc: "Preferences", icon: ChefHat, color: "text-[#00ff88]", bg: "bg-[#00ff88]/10" },
+        { id: 'dietary', label: "飲食偏好", desc: "Preferences", icon: ChefHat, color: "text-primary", bg: "bg-primary/10" },
         { id: 'theme', label: "視覺風格", desc: "Premium Theme", icon: Palette, color: "text-rose-400", bg: "bg-rose-500/10" },
         { id: 'display', label: "介面縮放", desc: "UI Scaling", icon: Settings, color: "text-blue-400", bg: "bg-blue-500/10" },
         { id: 'system', label: "系統設定", desc: "System", icon: Bell, color: "text-amber-400", bg: "bg-amber-500/10" },
@@ -727,15 +727,15 @@ export function Profile() {
                 <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-20 h-20 rounded-[2rem] bg-[#1a4d3d] border-4 border-[#00ff88]/20 flex items-center justify-center shadow-[0_20px_50px_rgba(0,255,136,0.15)] mb-4 relative group"
+                    className="w-20 h-20 rounded-[2rem] bg-[#1a4d3d] border-4 border-primary/20 flex items-center justify-center shadow-[0_20px_50px_rgba(0,255,136,0.15)] mb-4 relative group"
                 >
-                    <div className="absolute inset-0 bg-[#00ff88]/5 rounded-[2rem] animate-pulse group-hover:bg-[#00ff88]/10 transition-all" />
-                    <User size={40} className="text-[#00ff88] relative z-10" strokeWidth={1} />
+                    <div className="absolute inset-0 bg-primary/5 rounded-[2rem] animate-pulse group-hover:bg-primary/10 transition-all" />
+                    <User size={40} className="text-primary relative z-10" strokeWidth={1} />
                 </motion.div>
                 <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-1.5">管理中心</h2>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
-                    <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">已認證：首席美食品味家</span>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">已認證：首席美食品味家</span>
                 </div>
             </div>
 
@@ -834,7 +834,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                         <div className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
                             <div className="flex items-center gap-4">
                                 <div className={`w-3 h-3 rounded-full animate-pulse shadow-lg ${
-                                    apiStatus?.status === 'online' ? 'bg-[#00ff88] shadow-[#00ff88]/40' : 
+                                    apiStatus?.status === 'online' ? 'bg-primary shadow-primary/40' : 
                                     apiStatus?.status === 'no_key' ? 'bg-amber-400 shadow-amber-400/40' : 
                                     apiStatus ? 'bg-red-500 shadow-red-500/40' : 'bg-gray-500'
                                 }`} />
@@ -847,7 +847,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
 
                         <div className="space-y-3">
                             <div className="flex items-center justify-between px-1">
-                                <h4 className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">金鑰管理</h4>
+                                <h4 className="text-[9px] font-black text-primary uppercase tracking-widest">金鑰管理</h4>
                                 {settings.customApiKeys && <button onClick={() => updateSettings({ customApiKeys: "" })} className="text-[8px] font-black text-red-500/50 uppercase">清除</button>}
                             </div>
                             <input 
@@ -855,7 +855,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                 placeholder="貼上 API Key (多組請用逗號分隔)"
                                 value={settings.customApiKeys || ""}
                                 onChange={(e) => updateSettings({ customApiKeys: e.target.value })}
-                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs font-mono text-[#00ff88] outline-none focus:border-[#00ff88]/30 shadow-inner transition-all"
+                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs font-mono text-primary outline-none focus:border-primary/30 shadow-inner transition-all"
                             />
                         </div>
 
@@ -867,10 +867,10 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                     llmService.getKeyStatusList().map((keyInfo, idx) => (
                                         <div key={idx} className={`flex items-center justify-between px-3 py-2 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : 'bg-black/20 border-white/5'}`}>
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'}`} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-primary'}`} />
                                                 <span className="text-[9px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
                                             </div>
-                                            <div className={`text-[7px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-[#00ff88] opacity-40'}`}>
+                                            <div className={`text-[7px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-primary opacity-40'}`}>
                                                 {keyInfo.coolingDown ? `Cooldown ${keyInfo.cooldownRemaining}s` : 'Active'}
                                             </div>
                                         </div>
@@ -893,7 +893,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                             setSelectedModel(next);
                                         }}
                                         className={`px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-tighter border transition-all ${
-                                            selectedModel === m ? 'bg-[#00ff88] border-[#00ff88] text-[#0f2e24] shadow-lg' : 'bg-white/5 border-white/10 text-white/40'
+                                            selectedModel === m ? 'bg-primary border-primary text-background shadow-lg' : 'bg-white/5 border-white/10 text-white/40'
                                         }`}
                                     >
                                         {m}
@@ -913,7 +913,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                             ].map(pref => (
                                 <div key={pref.id} className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20"><pref.icon size={20} className="text-[#00ff88]" /></div>
+                                        <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20"><pref.icon size={20} className="text-primary" /></div>
                                         <div>
                                             <div className="text-[10px] font-black text-white uppercase">{pref.label}</div>
                                             <div className="text-[8px] text-gray-500 font-bold uppercase">{pref.desc}</div>
@@ -921,7 +921,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                     </div>
                                     <button 
                                         onClick={() => updateSettings({ dietary: { ...settings.dietary, [pref.id]: !settings.dietary[pref.id] } })}
-                                        className={`w-12 h-6 rounded-full relative transition-all ${settings.dietary[pref.id] ? 'bg-[#00ff88]' : 'bg-white/10'}`}
+                                        className={`w-12 h-6 rounded-full relative transition-all ${settings.dietary[pref.id] ? 'bg-primary' : 'bg-white/10'}`}
                                     >
                                         <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.dietary[pref.id] ? 'right-1' : 'left-1'}`} />
                                     </button>
@@ -935,7 +935,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                 placeholder="例如：花生, 海鮮, 蠶豆..." 
                                 value={settings.dietary.allergies || ""}
                                 onChange={(e) => updateSettings({ dietary: { ...settings.dietary, allergies: e.target.value } })}
-                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs text-white placeholder:text-white/10 outline-none focus:border-[#00ff88]/30 font-bold transition-all"
+                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs text-white placeholder:text-white/10 outline-none focus:border-primary/30 font-bold transition-all"
                             />
                         </div>
                     </div>
@@ -948,13 +948,11 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                             <div className="grid grid-cols-4 gap-3">
                                 {[
                                     { name: "Neural Mint", color: "#00ff88" },
-                                    { name: "Cyber Blue", color: "#00d2ff" },
-                                    { name: "Neon Rose", color: "#ff2d55" },
-                                    { name: "Vivid Amber", color: "#ffb800" },
-                                    { name: "Electric Purple", color: "#af52ff" },
-                                    { name: "Soft Sky", color: "#7ed6df" },
-                                    { name: "Deep Earth", color: "#e67e22" },
-                                    { name: "Pure White", color: "#ffffff" }
+                                    { name: "黑橘", color: "#ff8800" },
+                                    { name: "黑紫", color: "#af52ff" },
+                                    { name: "白金", color: "#d4af37" },
+                                    { name: "黑紅", color: "#ff0000" },
+                                    { name: "白藍", color: "#007aff" }
                                 ].map(c => (
                                     <button
                                         key={c.color}
@@ -1001,7 +999,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                             className={`w-full py-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl ${
                                 pendingColor === settings.themeColor 
                                 ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed' 
-                                : 'bg-[#00ff88] text-[#0f2e24] shadow-[0_0_30px_rgba(0,255,136,0.3)] active:scale-95'
+                                : 'bg-primary text-background shadow-[0_0_30px_rgba(0,255,136,0.3)] active:scale-95'
                             }`}
                             style={pendingColor !== settings.themeColor ? { backgroundColor: pendingColor } : {}}
                         >
@@ -1010,7 +1008,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                         </button>
 
                         <div className="text-[8px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed text-center px-4">
-                            選擇一個顏色以套用至全系統按鈕、圖示與邊框亮光。
+                            套用主題將會切換全系統配色、背景氛圍與亮點分布。
                         </div>
                     </div>
                 );
@@ -1073,7 +1071,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                                 </div>
                                 <button 
                                     onClick={sys.action}
-                                    className={`w-12 h-6 rounded-full relative transition-all ${settings[sys.id] ? (sys.color || 'bg-[#00ff88]') : 'bg-white/10'}`}
+                                    className={`w-12 h-6 rounded-full relative transition-all ${settings[sys.id] ? (sys.color || 'bg-primary') : 'bg-white/10'}`}
                                 >
                                     <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings[sys.id] ? 'right-1' : 'left-1'}`} />
                                 </button>
@@ -1098,25 +1096,25 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
     return (
         <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[150] bg-[#0f2e24]/80 backdrop-blur-2xl flex items-end sm:items-center justify-center p-0 sm:p-6"
+            className="fixed inset-0 z-[150] bg-background/80 backdrop-blur-2xl flex items-end sm:items-center justify-center p-0 sm:p-6"
         >
             <motion.div 
                 initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 className="bg-[#1a4d3d] w-full max-w-lg rounded-t-[3rem] sm:rounded-[3.5rem] p-8 border-t sm:border border-white/10 shadow-[0_-20px_80px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col max-h-[90vh]"
             >
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#00ff88]/5 to-transparent pointer-events-none" />
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
                 
                 <div className="flex items-center justify-between mb-10 relative z-10">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[#00ff88]/20 flex items-center justify-center text-[#00ff88] border border-[#00ff88]/20 shadow-lg">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-lg">
                             <Settings size={22} />
                         </div>
                         <div>
                             <h3 className="text-xl font-black text-white uppercase tracking-widest">
                                 {type === 'api' ? '神經節點設定' : type === 'dietary' ? '個人飲食偏好' : type === 'display' ? '視覺介面縮放' : '核心系統設定'}
                             </h3>
-                            <div className="text-[8px] font-bold text-[#00ff88] uppercase tracking-widest opacity-60">Neural Matrix Configuration</div>
+                            <div className="text-[8px] font-bold text-primary uppercase tracking-widest opacity-60">Neural Matrix Configuration</div>
                         </div>
                     </div>
                     <button onClick={onClose} className="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center text-gray-400 hover:text-white backdrop-blur-md border border-white/5 transition-all">
@@ -1129,7 +1127,7 @@ function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-white/5 relative z-10 flex justify-center">
-                    <button onClick={onClose} className="w-full py-4 rounded-2xl bg-[#00ff88] text-[#0f2e24] font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-all">
+                    <button onClick={onClose} className="w-full py-4 rounded-2xl bg-primary text-background font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-all">
                         更新並關閉介面
                     </button>
                 </div>
@@ -1157,11 +1155,11 @@ export function Saved() {
 
             {savedRecipes.length === 0 ? (
                 <div className="px-4 flex flex-col items-center justify-center py-10 text-center bg-white/5 rounded-2xl border border-white/5 mx-4">
-                    <div className="w-16 h-16 bg-[#00ff88]/5 rounded-full border border-[#00ff88]/10 flex items-center justify-center mb-4">
-                        <BookOpen size={28} className="text-[#00ff88]/20" />
+                    <div className="w-16 h-16 bg-primary/5 rounded-full border border-primary/10 flex items-center justify-center mb-4">
+                        <BookOpen size={28} className="text-primary/20" />
                     </div>
                     <h2 className="text-[10px] font-black text-white/50 uppercase mb-4 tracking-widest">暫無儲存的食譜方案</h2>
-                    <button onClick={() => nav("/")} className="bg-[#00ff88] text-[#0f2e24] px-8 py-3.5 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:scale-105 transition-all">
+                    <button onClick={() => nav("/")} className="bg-primary text-background px-8 py-3.5 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:scale-105 transition-all">
                         啟動掃描器去發掘
                     </button>
                 </div>
@@ -1238,7 +1236,7 @@ export function RecipeDetail() {
                 <div className="grid grid-cols-3 gap-3 mb-8">
                     {[{ i: Clock, v: recipe.time }, { i: ChefHat, v: recipe.difficulty }, { i: Users, v: "2-3人份" }].map((s, i) => (
                         <div key={i} className="bg-white/5 rounded-2xl p-4 text-center">
-                            <s.i className="w-4 h-4 mx-auto mb-2 text-[#00ff88]" />
+                            <s.i className="w-4 h-4 mx-auto mb-2 text-primary" />
                             <div className="text-xs font-black text-white">{s.v}</div>
                         </div>
                     ))}
@@ -1257,10 +1255,10 @@ export function RecipeDetail() {
                             </div>
                         )}
                         {recipe.sustainabilityTip && (
-                            <div className="bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-2xl p-4 flex gap-3">
-                                <Leaf size={16} className="text-[#00ff88] shrink-0 mt-0.5" />
+                            <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex gap-3">
+                                <Leaf size={16} className="text-primary shrink-0 mt-0.5" />
                                 <div>
-                                    <div className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest mb-1">零浪費智慧 (Zero Waste Tip)</div>
+                                    <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">零浪費智慧 (Zero Waste Tip)</div>
                                     <p className="text-[11px] text-white/70 leading-relaxed font-bold">{recipe.sustainabilityTip}</p>
                                 </div>
                             </div>
@@ -1284,7 +1282,7 @@ export function RecipeDetail() {
                                 alert("更新食譜失敗");
                             }
                         }}
-                        className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-5 rounded-2xl text-[10px] font-black text-[#00ff88] uppercase tracking-[0.2em] hover:bg-[#00ff88]/10 transition-all shadow-lg text-center"
+                        className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-5 rounded-2xl text-[10px] font-black text-primary uppercase tracking-[0.2em] hover:bg-primary/10 transition-all shadow-lg text-center"
                     >
                         <Sparkles size={18} />
                         重新分析並合成新方案
@@ -1296,7 +1294,7 @@ export function RecipeDetail() {
                         saveRecipe(recipe);
                         setShowSaveModal(true);
                     }} 
-                    className={`w-full py-5 rounded-2xl font-black text-sm uppercase shadow-lg flex items-center justify-center gap-3 mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all ${savedRecipes.find(r => r.id === recipe.id) ? 'bg-white/10 text-white' : 'bg-[#00ff88] text-[#0f2e24]'}`}
+                    className={`w-full py-5 rounded-2xl font-black text-sm uppercase shadow-lg flex items-center justify-center gap-3 mt-4 hover:scale-[1.02] active:scale-[0.98] transition-all ${savedRecipes.find(r => r.id === recipe.id) ? 'bg-white/10 text-white' : 'bg-primary text-background'}`}
                 >
                     <BookOpen size={20} />
                     {savedRecipes.find(r => r.id === recipe.id) ? '已儲存此食譜' : '儲存食譜'}
@@ -1305,7 +1303,7 @@ export function RecipeDetail() {
 
             <AnimatePresence>
                 {showSaveModal && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-[#0f2e24]/90 backdrop-blur-xl flex items-center justify-center p-6 pb-[15vh] sm:pb-6">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-xl flex items-center justify-center p-6 pb-[15vh] sm:pb-6">
                         <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-[#1a4d3d] w-full max-w-sm max-h-[75vh] flex flex-col rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
 
                             <button onClick={() => setShowSaveModal(false)} className="absolute right-4 top-4 z-20 w-8 h-8 rounded-full bg-black/20 flex items-center justify-center text-gray-300 hover:text-white backdrop-blur-md transition-colors">
@@ -1314,27 +1312,27 @@ export function RecipeDetail() {
 
                             <div className="p-6 pb-4 shrink-0 relative z-10 border-b border-white/5 bg-[#1a4d3d]">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-[#00ff88]/20 rounded-2xl flex items-center justify-center text-[#00ff88] border border-[#00ff88]/10 shadow-lg">
+                                    <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary border border-primary/10 shadow-lg">
                                         <BookOpen size={24} />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-black text-white uppercase tracking-widest">食譜已儲存</h3>
-                                        <div className="text-[10px] font-bold tracking-widest text-[#00ff88] mt-0.5">已同步至雲端與暫存清單</div>
+                                        <div className="text-[10px] font-bold tracking-widest text-primary mt-0.5">已同步至雲端與暫存清單</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="p-6 overflow-y-auto w-full flex-1 relative z-10 space-y-4 bg-[#0f2e24]/30">
+                            <div className="p-6 overflow-y-auto w-full flex-1 relative z-10 space-y-4 bg-background/30">
                                 <div>
                                     <h4 className="font-black text-xl text-white tracking-widest mb-2 leading-tight flex items-start gap-2">
-                                        <ChefHat size={18} className="text-[#00ff88] mt-1 shrink-0" />
+                                        <ChefHat size={18} className="text-primary mt-1 shrink-0" />
                                         {recipe.name}
                                     </h4>
                                     <div className="text-[11px] text-gray-400 font-bold leading-relaxed">{recipe.description}</div>
                                 </div>
 
                                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5 shadow-inner">
-                                    <div className="text-[10px] text-[#00ff88] mb-3 font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="text-[10px] text-primary mb-3 font-black uppercase tracking-widest flex items-center gap-2">
                                         <ChefHat size={12} />所需食材
                                     </div>
                                     <div className="flex flex-wrap gap-2">
@@ -1367,7 +1365,7 @@ export function RecipeDetail() {
                             </div>
 
                             <div className="p-4 shrink-0 relative z-10 bg-[#1a4d3d] border-t border-white/5">
-                                <button onClick={() => { setShowSaveModal(false); nav("/saved"); }} className="w-full bg-[#00ff88] text-[#0f2e24] py-4 rounded-xl font-black text-[11px] uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-[0.98] transition-all">
+                                <button onClick={() => { setShowSaveModal(false); nav("/saved"); }} className="w-full bg-primary text-background py-4 rounded-xl font-black text-[11px] uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-[0.98] transition-all">
                                     前往數據統計查看
                                 </button>
                             </div>

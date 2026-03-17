@@ -12,7 +12,6 @@ import { Bell } from "lucide-react";
  * 功能亮點：
  * 1. 控制全域主題：支援深色 (Dark) 與淺色 (Light) 主題切換 (雖然目前寫死深色賽博龐克為主)。
  * 2. 頁面轉場動畫：利用 `framer-motion` 在每次切換路徑 (Location.pathname) 時，產生平滑的左右滑動轉場過渡。
- * 3. 處理滑動手勢：監聽左右滑動 (`drag="x"`)，提供類原生 App 的左翻/右翻體驗。
  * 4. 系統級通知顯示：內建模擬的 `Toast` 系統，負責監聽並彈出「APP內的高能警告通知」。
  */
 
@@ -22,6 +21,46 @@ function hexToRgb(hex: string) {
         `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
         '0, 255, 136';
 }
+
+const THEME_PALETTES: Record<string, any> = {
+    "#00ff88": { // Neural Mint (Default)
+        bg: "#0f2e24",
+        surface: "#1a4d3d",
+        header: "#0d231b"
+    },
+    "#ff8800": { // 黑橘 (Black Orange)
+        bg: "#0d0a05",
+        surface: "#1a140a",
+        header: "#000000"
+    },
+    "#af52ff": { // 黑紫 (Black Purple)
+        bg: "#0a0510",
+        surface: "#140a20",
+        header: "#000000"
+    },
+    "#d4af37": { // 白金 (White Gold)
+        bg: "#ffffff",
+        surface: "#f8f8f8",
+        header: "#f0f0f0",
+        light: true
+    },
+    "#ff0000": { // 黑紅 (Black Red)
+        bg: "#0a0000",
+        surface: "#1a0505",
+        header: "#000000"
+    },
+    "#007aff": { // 白藍 (White Blue)
+        bg: "#f2f2f7",
+        surface: "#ffffff",
+        header: "#e5e5ea",
+        light: true
+    },
+    "#000000": { // Digital Black
+        bg: "#000000",
+        surface: "#111111",
+        header: "#000000"
+    }
+};
 
 export function MainLayout() {
     const location = useLocation();
@@ -82,8 +121,10 @@ export function MainLayout() {
     return (
         <div className={`min-h-screen bg-black flex justify-center w-full overflow-hidden ${!settings.darkMode ? 'light-theme' : ''}`}>
             <div 
-                className="w-full max-w-[430px] min-h-screen bg-[#0f2e24] text-white relative flex flex-col shadow-2xl overflow-hidden filter-theme origin-top"
+                className="w-full max-w-[430px] min-h-screen relative flex flex-col shadow-2xl overflow-hidden filter-theme origin-top"
                 style={{ 
+                    backgroundColor: 'var(--background)',
+                    color: 'var(--foreground)',
                     transform: isScaled ? `scale(${calculatedScale})` : 'none',
                     height: isScaled ? `${100 / calculatedScale}vh` : '100vh',
                     width: isScaled ? `${430 * calculatedScale}px` : '100%',
@@ -91,10 +132,14 @@ export function MainLayout() {
                     // Dynamic Theme Variables
                     '--primary': settings.themeColor || "#00ff88",
                     '--primary-rgb': (settings.themeColor && settings.themeColor.startsWith('#')) ? hexToRgb(settings.themeColor) : '0, 255, 136',
-                    '--primary-glow': `${settings.themeColor || "#00ff88"}40`
+                    '--primary-glow': `${settings.themeColor || "#00ff88"}40`,
+                    '--background': THEME_PALETTES[settings.themeColor]?.bg || "#0f2e24",
+                    '--card': THEME_PALETTES[settings.themeColor]?.surface || "#1a4d3d",
+                    '--header-bg': THEME_PALETTES[settings.themeColor]?.header || "#0d231b",
+                    '--foreground': THEME_PALETTES[settings.themeColor]?.light ? "#0f2e24" : "#ffffff"
                 } as any}
             >
-                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+                <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth" style={{ backgroundColor: 'var(--background)' }}>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={location.pathname}

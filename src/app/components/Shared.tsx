@@ -33,7 +33,7 @@ export function PageHeader({ showBackButton = false, title = "KITCHEN AI", right
                 </div>
 
                 <h1 className="text-sm flex items-center gap-1.5 font-bold tracking-tight">
-                    <Sparkles size={14} className="text-[#00ff88]" />
+                    <Sparkles size={14} className="text-primary" />
                     {title.toUpperCase()}
                 </h1>
 

@@ -31,14 +31,14 @@ export function RecipeCard({ recipe, onClick, getCategoryLabel }: RecipeCardProp
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-40" />
                 
                 {/* Match Score Badge (Inside Image) */}
-                <div className="absolute top-1.5 right-1.5 bg-[#0d231b]/90 backdrop-blur-md rounded-md p-1 border border-[#00ff88]/30 flex flex-col items-center min-w-[32px] shadow-xl">
-                    <span className="text-[9px] font-black text-[#00ff88]">{recipe.matchScore}%</span>
+                <div className="absolute top-1.5 right-1.5 bg-[#0d231b]/90 backdrop-blur-md rounded-md p-1 border border-primary/30 flex flex-col items-center min-w-[32px] shadow-xl">
+                    <span className="text-[9px] font-black text-primary">{recipe.matchScore}%</span>
                     <span className="text-[4px] font-black text-white/40 uppercase tracking-tighter">MATCH</span>
                 </div>
 
                 {/* Sustainability Badge */}
                 {recipe.sustainabilityTip && (
-                    <div className="absolute top-1.5 left-1.5 bg-[#00ff88] rounded-md px-1.5 py-1 flex items-center gap-1 shadow-lg border border-white/20">
+                    <div className="absolute top-1.5 left-1.5 bg-primary rounded-md px-1.5 py-1 flex items-center gap-1 shadow-lg border border-white/20">
                         <Leaf size={10} className="text-[#0f2e24]" fill="currentColor" />
                         <span className="text-[8px] font-black text-[#0f2e24] uppercase tracking-tighter">ECO</span>
                     </div>
@@ -48,7 +48,7 @@ export function RecipeCard({ recipe, onClick, getCategoryLabel }: RecipeCardProp
             <div className="w-full px-1">
                 <div className="flex flex-col gap-1 mb-2">
                     <div className="flex items-center justify-between mb-0.5">
-                        <div className="bg-[#00ff88] text-[#0f2e24] text-[6px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-widest">
+                        <div className="bg-primary text-[#0f2e24] text-[6px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-widest">
                             AI RECO
                         </div>
                         <div className="text-white/30 text-[5px] font-black uppercase">
@@ -56,24 +56,24 @@ export function RecipeCard({ recipe, onClick, getCategoryLabel }: RecipeCardProp
                         </div>
                     </div>
                     
-                    <h3 className="font-black text-[10px] text-white uppercase tracking-tight group-hover:text-[#00ff88] transition-colors leading-tight line-clamp-2 min-h-[24px]">{recipe.name}</h3>
+                    <h3 className="font-black text-[10px] text-white uppercase tracking-tight group-hover:text-primary transition-colors leading-tight line-clamp-2 min-h-[24px]">{recipe.name}</h3>
                 </div>
 
                 <div className="flex items-center justify-between mb-2 text-[6px] font-black text-white/30 uppercase tracking-widest">
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1">
-                            <Clock size={8} className="text-[#00ff88]/60" />
+                            <Clock size={8} className="text-primary/60" />
                             <span>{recipe.time}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <TrendingUp size={8} className="text-[#00ff88]/60" />
+                            <TrendingUp size={8} className="text-primary/60" />
                             <span>{recipe.difficulty}</span>
                         </div>
                     </div>
                 </div>
 
                 <button
-                    className="w-full bg-[#00ff88] text-[#0f2e24] py-1.5 rounded-lg font-black text-[8px] uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-1"
+                    className="w-full bg-primary text-[#0f2e24] py-1.5 rounded-lg font-black text-[8px] uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-1"
                 >
                     <span>COOK</span>
                     <ChevronRight size={10} strokeWidth={3} />
