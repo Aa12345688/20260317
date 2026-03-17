@@ -43,6 +43,7 @@ interface IngredientContextType {
         };
         uiScale: number; // 0.8 - 1.2
         autoScale: boolean;
+        customApiKeys: string; // User defined keys via UI
     };
     wasteHistory: WasteRecord[];
     savedRecipes: any[];
@@ -91,7 +92,8 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
             allergies: ""
         },
         uiScale: 1.0,
-        autoScale: true
+        autoScale: true,
+        customApiKeys: ""
     });
     const [savedRecipes, setSavedRecipes] = useState<any[]>([]);
 
@@ -116,6 +118,7 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
                 }
                 if (parsed.uiScale === undefined) parsed.uiScale = 1.0;
                 if (parsed.autoScale === undefined) parsed.autoScale = true;
+                if (parsed.customApiKeys === undefined) parsed.customApiKeys = "";
                 setSettings(parsed); 
             } catch (e) { }
         }
@@ -144,6 +147,13 @@ export function IngredientProvider({ children }: { children: ReactNode }) {
             return () => clearTimeout(timer);
         }
     }, [scannedItems, settings.notifications]);
+
+    // Sync custom API keys to LLM service
+    useEffect(() => {
+        if (settings.customApiKeys !== undefined) {
+            llmService.setCustomApiKeys(settings.customApiKeys);
+        }
+    }, [settings.customApiKeys]);
 
     /** 同步狀態至本地端 localStorage，實現離線存取與關閉保留 (Data Persistence) */
     useEffect(() => {

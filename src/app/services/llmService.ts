@@ -39,6 +39,7 @@ class LLMService {
     private currentModelIndex = 0;
     private apiKeyIndex = 0;
     private preferredModel: string | null = null;
+    private customApiKeys: string[] = [];
 
     // 記錄每個 key 的冷卻時間 (429 後暫停)
     private keyCooldowns: Record<string, number> = {};
@@ -60,7 +61,22 @@ class LLMService {
         return this.preferredModel;
     }
 
+    setCustomApiKeys(keys: string | string[]) {
+        if (Array.isArray(keys)) {
+            this.customApiKeys = keys.filter(k => k.trim() !== "");
+        } else {
+            this.customApiKeys = keys.split(",").map(k => k.trim()).filter(k => k !== "");
+        }
+        // Reset index when keys change
+        this.apiKeyIndex = 0;
+    }
+
     private getApiKeys(): string[] {
+        // Prioritize custom keys entered via UI
+        if (this.customApiKeys.length > 0) {
+            return this.customApiKeys;
+        }
+
         const keys = import.meta.env.VITE_LLM_API_KEY || "";
         return keys.split(",").map((k: string) => k.trim()).filter((k: string) => k !== "");
     }
