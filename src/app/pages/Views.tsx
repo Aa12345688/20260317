@@ -719,19 +719,19 @@ export function Profile() {
     ];
 
     return (
-        <div className="pb-28 px-6 pt-8 relative min-h-screen">
-            <h2 className="text-center text-[10px] font-black text-white/20 uppercase tracking-[0.4em] mb-12">Neural Core Interface</h2>
+        <div className="pb-28 px-6 pt-6 relative min-h-screen">
+            <h2 className="text-center text-[8px] font-black text-white/10 uppercase tracking-[0.4em] mb-6">Neural Core Interface</h2>
             
-            <div className="flex flex-col items-center mb-12">
+            <div className="flex flex-col items-center mb-8">
                 <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-24 h-24 rounded-[2.5rem] bg-[#1a4d3d] border-4 border-[#00ff88]/20 flex items-center justify-center shadow-[0_20px_50px_rgba(0,255,136,0.15)] mb-6 relative group"
+                    className="w-20 h-20 rounded-[2rem] bg-[#1a4d3d] border-4 border-[#00ff88]/20 flex items-center justify-center shadow-[0_20px_50px_rgba(0,255,136,0.15)] mb-4 relative group"
                 >
-                    <div className="absolute inset-0 bg-[#00ff88]/5 rounded-[2.5rem] animate-pulse group-hover:bg-[#00ff88]/10 transition-all" />
-                    <User size={48} className="text-[#00ff88] relative z-10" strokeWidth={1} />
+                    <div className="absolute inset-0 bg-[#00ff88]/5 rounded-[2rem] animate-pulse group-hover:bg-[#00ff88]/10 transition-all" />
+                    <User size={40} className="text-[#00ff88] relative z-10" strokeWidth={1} />
                 </motion.div>
-                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">管理中心</h2>
+                <h2 className="text-2xl font-black text-white uppercase tracking-tighter mb-1.5">管理中心</h2>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-full">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
                     <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">已認證：首席美食品味家</span>
