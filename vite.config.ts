@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import compression from 'vite-plugin-compression'
 
 export default defineConfig({
-  base: "/ai-fridge-for-LLM/",
+  base: "/20260317/",
   plugins: [
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used  do not remove them

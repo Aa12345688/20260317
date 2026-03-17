@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://darke45678-dev.github.io/ai-fridge-for-LLM/",
+  "homepage": "https://Aa12345688.github.io/20260317/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
