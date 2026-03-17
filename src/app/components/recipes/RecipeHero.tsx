@@ -17,7 +17,7 @@ export function RecipeHero({ image, name }: RecipeHeroProps) {
 
             <div className="absolute bottom-4 left-4 right-4">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                    <div className="px-2.5 py-0.5 bg-primary text-background text-[8px] font-black rounded-full uppercase tracking-widest shadow-lg">
+                    <div className="px-2.5 py-0.5 bg-primary text-[var(--background)] text-[8px] font-black rounded-full uppercase tracking-widest shadow-lg">
                         98% Compatible
                     </div>
                 </div>

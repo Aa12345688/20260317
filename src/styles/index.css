@@ -28,7 +28,18 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 136, 0.3);
+    background: var(--primary-glow);
+}
+
+/* 強制重置所有捲軸為深色系 */
+*::-webkit-scrollbar-thumb {
+    background-color: #333 !important;
+}
+
+/* 強制重置選取文字的顏色 */
+::selection {
+    background: #444;
+    color: white;
 }
 
 /* Specifically style scrollbar for .no-scrollbar class so it remains scrollable via mouse drag on desktop */
@@ -55,5 +66,5 @@
 }
 
 .no-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 136, 0.4);
+    background: var(--primary-glow);
 }

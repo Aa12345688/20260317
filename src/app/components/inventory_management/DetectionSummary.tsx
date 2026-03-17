@@ -18,7 +18,7 @@ export function DetectionSummary({ readOnly = false }: { readOnly?: boolean }) {
 
     return (
         <div className="w-full mt-6 px-2 animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="bg-background/60 backdrop-blur-xl border border-primary/20 rounded-[2.5rem] p-5 shadow-2xl overflow-hidden">
+            <div className="bg-[var(--background)]/60 backdrop-blur-xl border border-primary/20 rounded-[2.5rem] p-5 shadow-2xl overflow-hidden">
                 <div className="flex items-center justify-between mb-4 px-2">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -33,7 +33,7 @@ export function DetectionSummary({ readOnly = false }: { readOnly?: boolean }) {
                     {tempDetections.map((item) => (
                         <div
                             key={item.id}
-                            className={`bg-[#1a4d3d]/40 border ${selectedIds.includes(item.id) ? 'border-primary/40 shadow-[0_0_10px_rgba(0,255,136,0.1)]' : 'border-white/5'} rounded-2xl px-4 py-3 flex items-center justify-between group animate-in zoom-in duration-300 transition-all`}
+                            className={`bg-[var(--card)]/40 border ${selectedIds.includes(item.id) ? 'border-primary/40 shadow-[0_0_10px_var(--primary-glow)]' : 'border-white/5'} rounded-2xl px-4 py-3 flex items-center justify-between group animate-in zoom-in duration-300 transition-all`}
                         >
                             <div className="flex items-center gap-4 flex-1 min-w-0">
                                 {/* Checkbox */}

@@ -216,17 +216,17 @@ export function CameraView({ videoRef }: CameraViewProps) {
         <div className="flex flex-col items-center w-full max-w-sm">
             <div className="relative w-full">
                 {/* 掃描模式切換器 */}
-                <div className="flex bg-[#0f2e24]/60 backdrop-blur-xl rounded-2xl p-1 mb-4 border border-primary/20 self-center w-fit mx-auto">
+                <div className="flex bg-[var(--background)]/60 backdrop-blur-xl rounded-2xl p-1 mb-4 border border-primary/20 self-center w-fit mx-auto">
                     <button
                         onClick={() => setScanMode("local")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "local" ? 'bg-primary text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-primary/60 hover:text-primary'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "local" ? 'bg-primary text-[var(--background)] shadow-[0_0_15px_var(--primary-glow)]' : 'text-primary/60 hover:text-primary'}`}
                     >
                         <Brain size={14} />
                         YOLO 本地辨識
                     </button>
                     <button
                         onClick={() => setScanMode("cloud")}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "cloud" ? 'bg-primary text-[#0f2e24] shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'text-primary/60 hover:text-primary'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === "cloud" ? 'bg-primary text-[var(--background)] shadow-[0_0_15px_var(--primary-glow)]' : 'text-primary/60 hover:text-primary'}`}
                     >
                         <Sparkles size={14} />
                         Gemini 雲端辨識
@@ -234,7 +234,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 </div>
 
                 {/* AI Status Badge */}
-                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[#0f2e24]/80 backdrop-blur-md border ${!navigator.onLine && scanMode === "cloud" ? 'border-red-500' : !modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-primary'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-colors duration-500`}>
+                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[var(--background)]/80 backdrop-blur-md border ${!navigator.onLine && scanMode === "cloud" ? 'border-red-500' : !modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-primary'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_var(--primary-glow)] transition-colors duration-500`}>
                     <div className={`w-2 h-2 rounded-full ${!navigator.onLine && scanMode === "cloud" ? 'bg-red-500 animate-pulse' : !modelLoaded && scanMode === "local" ? 'bg-red-400' : isScanning ? 'bg-amber-400 animate-pulse' : 'bg-primary'} shadow-[0_0_8px_currentColor]`} />
                     <span className={`text-[10px] font-black tracking-widest ${!navigator.onLine && scanMode === "cloud" ? 'text-red-500' : !modelLoaded && scanMode === "local" ? 'text-red-400' : isScanning ? 'text-amber-400' : 'text-primary'} uppercase`}>
                         {!navigator.onLine && scanMode === "cloud" ? "偵測到離線：無法使用雲端 AI" : scanMode === "cloud" ? (isScanning ? "Cloud AI 串接中..." : "Gemini 視覺系統已就緒") : (!modelLoaded ? "系統核心啟動中..." : isScanning ? "正在為您辨識..." : "掃描系統已就緒")}
@@ -247,7 +247,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
                     {isScanning && scanMode === "local" && (
                         <div className="animate-scan-laser" />
                     )}
-                    
+
                     <video
                         ref={videoRef}
                         autoPlay
@@ -273,14 +273,14 @@ export function CameraView({ videoRef }: CameraViewProps) {
                                     borderRadius: '8px'
                                 }}
                             >
-                                <div className={`absolute -top-6 left-0 px-2 py-0.5 rounded-t-md text-[8px] font-black uppercase whitespace-nowrap ${boxData.isSpoiled ? 'bg-red-500 text-white' : 'bg-primary text-[#0f2e24]'}`}>
+                                <div className={`absolute -top-6 left-0 px-2 py-0.5 rounded-t-md text-[8px] font-black uppercase whitespace-nowrap ${boxData.isSpoiled ? 'bg-red-500 text-white' : 'bg-primary text-[var(--background)]'}`}>
                                     {boxData.isSpoiled ? 'BAD' : 'GOOD'} | {boxData.name} | {Math.round((boxData.confidence || 0) * 100)}%
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#0f2e24]/40 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/40 to-transparent pointer-events-none" />
 
                     {isScanning && (
                         <div className="absolute inset-0 bg-primary/5 flex flex-col items-center justify-center">

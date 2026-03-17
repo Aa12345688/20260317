@@ -52,7 +52,7 @@ export function NeuralAnalyticsDashboard({ data, scannedItems }: { data: WasteRe
     }, [chartData]);
 
     return (
-        <div className="bg-[#0d231b]/60 backdrop-blur-xl rounded-[2rem] p-5 border border-white/10 mb-6 relative overflow-hidden group shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
+        <div className="bg-[var(--header-bg)]/60 backdrop-blur-xl rounded-[2rem] p-5 border border-white/10 mb-6 relative overflow-hidden group shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]">
             <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/10 rounded-full blur-[60px] pointer-events-none" />
 
             <div className="flex items-center justify-between mb-6 relative z-20">
@@ -72,7 +72,7 @@ export function NeuralAnalyticsDashboard({ data, scannedItems }: { data: WasteRe
                     </div>
                 </div>
                 <div className="flex bg-background p-1 rounded-xl border border-white/10">
-                    <button onClick={() => setTab("history")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "history" ? "bg-primary text-background" : "text-gray-500"}`}>歷史</button>
+                    <button onClick={() => setTab("history")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "history" ? "bg-primary text-[var(--background)]" : "text-gray-500"}`}>歷史</button>
                     <button onClick={() => setTab("predict")} className={`px-4 py-1.5 rounded-lg text-[8px] font-black uppercase transition-all ${tab === "predict" ? "bg-amber-400 text-background" : "text-gray-500"}`}>預測</button>
                 </div>
             </div>
@@ -116,7 +116,7 @@ export function NeuralAnalyticsDashboard({ data, scannedItems }: { data: WasteRe
                                         className={`flex-1 flex flex-col items-center gap-2 group/bar relative cursor-pointer transition-transform ${selectedDate === d.date ? 'scale-110' : 'hover:scale-105'}`}
                                     >
                                         <div className="absolute top-0 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 -translate-y-4 group-hover/bar:-translate-y-2 flex flex-col items-center z-30">
-                                            <span className="bg-primary text-background text-[8px] font-black px-2 py-1 rounded-lg tracking-widest shadow-[0_0_15px_rgba(0,255,136,0.3)] whitespace-nowrap">
+                                            <span className="bg-primary text-[var(--background)] text-[8px] font-black px-2 py-1 rounded-lg tracking-widest shadow-[0_0_15px_var(--primary-glow)] whitespace-nowrap">
                                                 浪費 {d.amount}
                                             </span>
                                             <div className="w-1.5 h-1.5 bg-primary rotate-45 -mt-1" />
@@ -224,7 +224,7 @@ export function NeuralAnalyticsDashboard({ data, scannedItems }: { data: WasteRe
                                     <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden flex shadow-inner mb-4">
                                         {riskItems.length > 0 && <div style={{ width: getWidth(riskItems.length) }} className="bg-red-500 transition-all duration-1000 animate-pulse border-r border-background" />}
                                         {warningItems.length > 0 && <div style={{ width: getWidth(warningItems.length) }} className="bg-amber-400 transition-all duration-1000 border-r border-background" />}
-                                        {safeItems.length > 0 && <div style={{ width: getWidth(safeItems.length) }} className="bg-primary transition-all duration-1000 border-r border-background" />}
+                                        {safeItems.length > 0 && <div style={{ width: getWidth(safeItems.length) }} className="bg-primary transition-all duration-1000 border-r border-[var(--background)]" />}
                                         {(total - riskItems.length - warningItems.length - safeItems.length > 0) && <div style={{ width: getWidth(total - riskItems.length - warningItems.length - safeItems.length) }} className="bg-gray-600 transition-all duration-1000" />}
                                     </div>
 

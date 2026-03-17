@@ -23,7 +23,7 @@ export function PageHeader({ showBackButton = false, title = "KITCHEN AI", right
 
     return (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-[400px] pointer-events-none">
-            <header className="flex items-center justify-between px-4 py-2 bg-[#0d231b]/90 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_20px_40px_-5px_rgba(0,0,0,0.6)] pointer-events-auto">
+            <header className="flex items-center justify-between px-4 py-2 bg-[var(--header-bg)]/90 backdrop-blur-2xl border border-white/10 rounded-full shadow-[0_20px_40px_-5px_rgba(0,0,0,0.6)] pointer-events-auto">
                 <div className="flex items-center gap-1.5">
                     {showBackButton && (
                         <button onClick={() => navigate(-1)} className="p-1 -ml-1 hover:bg-white/5 rounded-full transition-colors">

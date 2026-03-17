@@ -19,7 +19,7 @@ export function IngredientCloud({ items, onAddMore }: IngredientCloudProps) {
                             key={index}
                             className="group flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:border-primary/50 transition-all cursor-default shadow-lg"
                         >
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#00ff88]" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_var(--primary-glow)]" />
                             <span className="text-[10px] font-black text-white uppercase tracking-tight">{ingredient.name}</span>
                             <span className="text-[9px] font-bold text-primary/60">×{ingredient.quantity}</span>
                         </div>

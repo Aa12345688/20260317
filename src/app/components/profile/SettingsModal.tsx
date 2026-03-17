@@ -59,9 +59,9 @@ export function SettingsModal({ type, onClose, settings, updateSettings, apiStat
                                     llmService.getKeyStatusList().map((keyInfo, idx) => {
                                         const isActive = llmService.getActiveKeyInfo() === keyInfo.masked;
                                         return (
-                                            <div key={idx} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : isActive ? 'bg-primary/10 border-primary/30 shadow-[0_0_15px_rgba(0,255,136,0.1)]' : 'bg-black/20 border-white/5'}`}>
+                                            <div key={idx} className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : isActive ? 'bg-primary/10 border-primary/30 shadow-[0_0_15px_var(--primary-glow)]' : 'bg-black/20 border-white/5'}`}>
                                                 <div className="flex items-center gap-2">
-                                                    <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-primary'} ${isActive ? 'shadow-[0_0_8px_rgba(0,255,136,0.8)]' : ''}`} />
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-primary'} ${isActive ? 'shadow-[0_0_8px_var(--primary)]' : ''}`} />
                                                     <div className="flex flex-col">
                                                         <span className="text-[9px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
                                                         {keyInfo.isCustom && <span className="text-[6px] font-black text-primary/60 uppercase tracking-tighter">使用者自定義金鑰</span>}
@@ -96,7 +96,7 @@ export function SettingsModal({ type, onClose, settings, updateSettings, apiStat
                                                 llmService.setPreferredModel(next);
                                                 setSelectedModel(next);
                                             }}
-                                            className={`relative px-3 py-3 rounded-2xl text-[8px] font-black uppercase tracking-tighter border transition-all flex flex-col items-center justify-center gap-1 ${selectedModel === m ? 'bg-primary border-primary text-background shadow-lg scale-105' : 'bg-black/40 border-white/5 text-white/40 hover:border-white/20'
+                                            className={`relative px-3 py-3 rounded-2xl text-[8px] font-black uppercase tracking-tighter border transition-all flex flex-col items-center justify-center gap-1 ${selectedModel === m ? 'bg-primary border-primary text-[var(--background)] shadow-lg scale-105' : 'bg-black/40 border-white/5 text-white/40 hover:border-white/20'
                                                 }`}
                                         >
                                             {isRecommended && (
@@ -207,7 +207,7 @@ export function SettingsModal({ type, onClose, settings, updateSettings, apiStat
                             disabled={isApplying || pendingColor === settings.themeColor}
                             className={`w-full py-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl ${pendingColor === settings.themeColor
                                 ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed'
-                                : 'bg-primary text-background shadow-[0_0_30px_rgba(0,255,136,0.3)] active:scale-95'
+                                : 'bg-primary text-[var(--background)] shadow-[0_0_30px_var(--primary-glow)] active:scale-95'
                                 }`}
                             style={pendingColor !== settings.themeColor ? { backgroundColor: pendingColor } : {}}
                         >
@@ -335,7 +335,7 @@ export function SettingsModal({ type, onClose, settings, updateSettings, apiStat
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-white/5 relative z-10 flex justify-center">
-                    <button onClick={onClose} className="w-full py-4 rounded-2xl bg-primary text-background font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-all">
+                    <button onClick={onClose} className="w-full py-4 rounded-2xl bg-primary text-[var(--background)] font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-all">
                         更新並關閉介面
                     </button>
                 </div>

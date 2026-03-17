@@ -34,14 +34,20 @@ export function RecipeDetailPage() {
     }, [id, recommendedRecipes, savedRecipes]);
 
     const fallbackRecipe = {
+        id: "fallback",
         name: "AI 合成食譜",
         image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
         time: "15 分鐘",
         difficulty: "簡單",
+        category: "other",
+        matchScore: 100,
         requiredIngredients: ["番茄", "菠菜"],
         optionalIngredients: [],
-        description: "智慧生成食譜。"
-    };
+        description: "智慧生成食譜。",
+        substitutionTip: "可以使用其他綠色蔬菜代替菠菜。",
+        sustainabilityTip: "使用即將過期的番茄可以減少浪費。",
+        steps: [{ title: "初始化", description: "準備食材。" }, { title: "執行", description: "標準烹飪。" }]
+    } as any;
 
     const currentRecipe = recipe || fallbackRecipe;
 
@@ -132,13 +138,13 @@ export function RecipeDetailPage() {
             <AnimatePresence>
                 {showSaveModal && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-background/90 backdrop-blur-xl flex items-center justify-center p-6 pb-[15vh] sm:pb-6">
-                        <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-[#1a4d3d] w-full max-w-sm max-h-[75vh] flex flex-col rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
+                        <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-[var(--card)] w-full max-w-sm max-h-[75vh] flex flex-col rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
 
                             <button onClick={() => setShowSaveModal(false)} className="absolute right-4 top-4 z-20 w-8 h-8 rounded-full bg-black/20 flex items-center justify-center text-gray-300 hover:text-white backdrop-blur-md transition-colors">
                                 <X size={16} />
                             </button>
 
-                            <div className="p-6 pb-4 shrink-0 relative z-10 border-b border-white/5 bg-[#1a4d3d]">
+                            <div className="p-6 pb-4 shrink-0 relative z-10 border-b border-white/5 bg-[var(--card)]">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary border border-primary/10 shadow-lg">
                                         <BookOpen size={24} />
@@ -192,7 +198,7 @@ export function RecipeDetailPage() {
                                 </div>
                             </div>
 
-                            <div className="p-4 shrink-0 relative z-10 bg-[#1a4d3d] border-t border-white/5">
+                            <div className="p-4 shrink-0 relative z-10 bg-[var(--card)] border-t border-white/5">
                                 <button onClick={() => { setShowSaveModal(false); nav("/saved"); }} className="w-full bg-primary text-background py-4 rounded-xl font-black text-[11px] uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-[0.98] transition-all">
                                     前往數據統計查看
                                 </button>

@@ -62,7 +62,7 @@ export function ProfilePage() {
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setActiveModal(item.id)}
-                        className="p-5 rounded-3xl bg-[#0d231b]/60 backdrop-blur-xl border border-white/5 flex flex-col items-start gap-4 text-left shadow-xl group transition-all"
+                        className="p-5 rounded-3xl bg-[var(--card)]/60 backdrop-blur-xl border border-white/5 flex flex-col items-start gap-4 text-left shadow-xl group transition-all"
                     >
                         <div className={`w-12 h-12 ${item.bg} rounded-2xl flex items-center justify-center border border-white/5 group-hover:border-white/20 transition-all`}>
                             <item.icon size={24} className={item.color} />

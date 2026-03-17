@@ -60,7 +60,7 @@ export function InventoryPage() {
             <motion.div style={{ y: y2 }} className="absolute bottom-40 -right-20 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
 
             {/* Minimal Floating Back Button */}
-            <button onClick={() => navigate(-1)} aria-label="返回上一步" className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[#0d231b]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
+            <button onClick={() => navigate(-1)} aria-label="返回上一步" className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[var(--header-bg)]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
             <div className="flex justify-end px-4 mb-2">
                 <button onClick={() => setShowForm(!showForm)} aria-label="手動新增食材" className="p-2 bg-primary rounded-xl shadow-lg hover:scale-105 active:scale-95 transition-all"><Plus size={20} className="text-background stroke-[3]" /></button>
             </div>
@@ -145,7 +145,7 @@ export function InventoryPage() {
                                         translateZ: 20
                                     }}
                                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                    className={`bg-[#0d231b]/60 backdrop-blur-xl rounded-2xl p-3 border transition-all relative overflow-hidden group shadow-lg hover:shadow-2xl ${i.isSpoiled || isExpired ? 'border-red-500/50 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : isWarning ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_20px_rgba(251,191,36,0.1)]' : 'border-white/10'}`}
+                                    className={`bg-[var(--card)]/60 backdrop-blur-xl rounded-2xl p-3 border transition-all relative overflow-hidden group shadow-lg hover:shadow-2xl ${i.isSpoiled || isExpired ? 'border-red-500/50 bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : isWarning ? 'border-amber-400/50 bg-amber-400/5 shadow-[0_0_20px_rgba(251,191,36,0.1)]' : 'border-white/10'}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <button

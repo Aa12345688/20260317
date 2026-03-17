@@ -19,7 +19,7 @@ function hexToRgbValues(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ?
         [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] :
-        [0, 255, 136];
+        [0, 0, 0];
 }
 
 function hexToRgb(hex: string) {
@@ -116,19 +116,30 @@ export function MainLayout() {
     const activeColor = settings.themeColor || "#00ff88";
     const atmosphere = STATIC_PALETTES[activeColor] || generateAtmosphere(activeColor);
 
+    useEffect(() => {
+        // 全域動態變數注入 (Global Variable Injection for Portals/Modals)
+        const root = document.documentElement;
+        root.style.setProperty('--primary', activeColor);
+        root.style.setProperty('--primary-rgb', hexToRgb(activeColor));
+        root.style.setProperty('--primary-glow', `${activeColor}40`);
+        root.style.setProperty('--background', atmosphere.bg);
+        root.style.setProperty('--card', atmosphere.surface);
+        root.style.setProperty('--header-bg', atmosphere.header);
+        root.style.setProperty('--foreground', atmosphere.light ? "#121212" : "#ffffff");
+
+        // 同步 PWA/瀏覽器 標題列色彩 (Mobile Address Bar Sync)
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+            metaTheme.setAttribute('content', atmosphere.header);
+        }
+    }, [activeColor, atmosphere]);
+
     return (
         <div className={`min-h-screen bg-black flex justify-center w-full overflow-x-hidden ${!settings.darkMode ? 'light-theme' : ''}`}>
             <div
                 className="w-full max-w-[430px] min-h-screen relative flex flex-col shadow-2xl filter-theme bg-[var(--background)] text-[var(--foreground)]"
                 style={{
-                    // Dynamic Theme Variables
-                    '--primary': activeColor,
-                    '--primary-rgb': hexToRgb(activeColor),
-                    '--primary-glow': `${activeColor}40`,
-                    '--background': atmosphere.bg,
-                    '--card': atmosphere.surface,
-                    '--header-bg': atmosphere.header,
-                    '--foreground': atmosphere.light ? "#1a4d3d" : "#ffffff"
+                    '--foreground': atmosphere.light ? "#121212" : "#ffffff"
                 } as any}
             >
                 <main className="flex-1 overflow-y-auto no-scrollbar scroll-smooth" style={{ backgroundColor: 'var(--background)' }}>

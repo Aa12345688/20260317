@@ -15,7 +15,7 @@ export function SavedPage() {
 
     return (
         <div className="pb-28 pt-6 relative">
-            <button onClick={() => nav(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[#0d231b]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
+            <button onClick={() => nav(-1)} className="fixed top-4 left-4 z-[110] w-10 h-10 bg-[var(--header-bg)]/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all"><ChevronLeft size={20} className="text-white" /></button>
             <div className="px-6 mb-8 mt-2 text-left">
                 <NeuralAnalyticsDashboard data={wasteHistory} scannedItems={scannedItems} />
             </div>

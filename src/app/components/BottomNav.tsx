@@ -51,7 +51,7 @@ export function BottomNav() {
               </span>
               {/* 當前頁面的高亮霓虹光點指示器 */}
               {isActive && (
-                <div className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_10px_var(--primary)]" />
+                <div className="absolute -bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_10px_var(--primary-glow)]" />
               )}
             </button>
           );

@@ -20,8 +20,8 @@ export default defineConfig({
         name: 'AI Fridge for LLM - Culinary Intelligence',
         short_name: 'FridgeLLM',
         description: 'AI-powered fridge management optimized for LLM integration and optimized vision performance.',
-        theme_color: '#00ff88',
-        background_color: '#0f2e24',
+        theme_color: '#000000',
+        background_color: '#000000',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

@@ -42,7 +42,7 @@ export function EditItemModal({ item, onSave, onDismiss }: { item: any, onSave: 
                         <label className="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-widest">分類標籤</label>
                         <div className="flex flex-wrap gap-2">
                             {["蔬菜", "水果", "肉類", "海鮮", "乳製品", "五穀", "其他"].map(c => (
-                                <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase border transition-all ${category === c ? 'bg-primary text-background border-primary' : 'bg-white/5 text-gray-400 border-white/10'}`}>{c}</button>
+                                <button key={c} onClick={() => setCategory(c)} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase border transition-all ${category === c ? 'bg-primary text-[var(--background)] border-primary' : 'bg-white/5 text-gray-400 border-white/10'}`}>{c}</button>
                             ))}
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export function EditItemModal({ item, onSave, onDismiss }: { item: any, onSave: 
                         </div>
                     )}
 
-                    <button onClick={handleConfirmSave} className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 ${confirmingZero ? 'bg-red-500 text-white' : 'bg-primary text-background'}`}>
+                    <button onClick={handleConfirmSave} className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 ${confirmingZero ? 'bg-red-500 text-white' : 'bg-primary text-[var(--background)]'}`}>
                         {confirmingZero ? '確定標記為過期' : '更新資料 (Update)'}
                     </button>
                     {confirmingZero && (
