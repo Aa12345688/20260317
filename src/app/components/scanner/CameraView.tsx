@@ -30,8 +30,8 @@ export function CameraView({ videoRef }: CameraViewProps) {
 
     // 類別名稱對照表 (由您的新版 YOLO 權重決定)
     const CLASS_NAMES = [
-        "apple", "banana", "cabbage", "meat", "orange", 
-        "rotten apple", "rotten banana", "rotten cabbage", 
+        "apple", "banana", "cabbage", "meat", "orange",
+        "rotten apple", "rotten banana", "rotten cabbage",
         "rotten meat", "rotten orange", "rotten spinach", "spinach"
     ];
 
@@ -46,25 +46,27 @@ export function CameraView({ videoRef }: CameraViewProps) {
                     return;
                 }
 
-                // 從環境取得基礎路徑，並加入 Version Hash 避免瀏覽器快取舊權重
+                // 設定 ONNX Runtime WASM 零件經由本地伺服器讀取 (PWA 離線支援關鍵)
+                // 這裡的路徑必須對應 public/wasm 資料夾
                 const baseUrl = import.meta.env.BASE_URL || "/";
-                const modelUrl = `${baseUrl}best.onnx?v=${Date.now()}`;
-                
-                // 設定 ONNX Runtime WASM 零件經由 CDN 下載以確保版本一致與路徑正確
-                const cdnUrl = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.3/dist/";
-                ort.env.wasm.wasmPaths = cdnUrl;
+                const wasmPath = `${baseUrl}wasm/`;
+
+                ort.env.wasm.wasmPaths = wasmPath;
                 ort.env.wasm.numThreads = 1;
                 ort.env.wasm.proxy = false;
 
+                // 從環境取得基礎路徑，並加入 Version Hash 避免瀏覽器快取舊權重
+                const modelUrl = `${baseUrl}best.onnx?v=1.0.0`;
+
                 // 載入模型 (優先嘗試 WebGL GPU 加速)
                 const session = await ort.InferenceSession.create(modelUrl, {
-                    executionProviders: ["webgl", "wasm"], 
-                    graphOptimizationLevel: "all" 
+                    executionProviders: ["webgl", "wasm"],
+                    graphOptimizationLevel: "all"
                 });
-                
+
                 sessionRef.current = session;
                 setModelLoaded(true);
-                console.log("✅ AI 大腦載入成功！");
+                console.log("✅ AI 大腦載入成功 (離線部署模式)！");
             } catch (e) {
                 console.error("❌ 模型載入失敗，具體錯誤內容:", e);
                 if (e instanceof Error) {
@@ -72,8 +74,19 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 }
             }
         }
+
+        // 偵測網路狀態並自動切換模式
+        const handleOffline = () => {
+            if (scanMode === "cloud") {
+                setScanMode("local");
+                notificationService.send("離線模式已啟動", "偵測到離線狀態，已自動切換至本地 YOLO 辨識模式。");
+            }
+        };
+        window.addEventListener('offline', handleOffline);
+
         initModel();
-    }, []);
+        return () => window.removeEventListener('offline', handleOffline);
+    }, [scanMode]);
 
     const handleScan = async () => {
         if (scanMode === "local") {
@@ -87,7 +100,7 @@ export function CameraView({ videoRef }: CameraViewProps) {
         if (!videoRef.current || !sessionRef.current) return;
         setIsScanning(true);
         setCurrentBoxes([]);
-        clearTempDetections(); 
+        clearTempDetections();
 
         try {
             // ... (existing YOLO logic)
@@ -115,11 +128,11 @@ export function CameraView({ videoRef }: CameraViewProps) {
 
             const detections: any[] = [];
             const CONF_THRESHOLD = settings.confidenceThreshold;
-            
+
             const isTransposed = dims[1] > dims[2];
             const numAnchors = isTransposed ? dims[1] : dims[2];
             const numChannels = isTransposed ? dims[2] : dims[1];
-            
+
             for (let i = 0; i < numAnchors; i++) {
                 let maxConf = 0;
                 let classId = -1;
@@ -245,10 +258,10 @@ export function CameraView({ videoRef }: CameraViewProps) {
                 </div>
 
                 {/* AI Status Badge */}
-                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[#0f2e24]/80 backdrop-blur-md border ${!modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-[#00ff88]'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-colors duration-500`}>
-                    <div className={`w-2 h-2 rounded-full ${!modelLoaded && scanMode === "local" ? 'bg-red-400' : isScanning ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'} shadow-[0_0_8px_currentColor]`} />
-                    <span className={`text-[10px] font-black tracking-widest ${!modelLoaded && scanMode === "local" ? 'text-red-400' : isScanning ? 'text-amber-400' : 'text-[#00ff88]'} uppercase`}>
-                        {scanMode === "cloud" ? (isScanning ? "Cloud AI 串接中..." : "Gemini 視覺系統已就緒") : (!modelLoaded ? "系統核心啟動中..." : isScanning ? "正在為您辨識..." : "掃描系統已就緒")}
+                <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 z-20 bg-[#0f2e24]/80 backdrop-blur-md border ${!navigator.onLine && scanMode === "cloud" ? 'border-red-500' : !modelLoaded && scanMode === "local" ? 'border-red-400' : isScanning ? 'border-amber-400' : 'border-[#00ff88]'} rounded-full px-4 py-1.5 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-colors duration-500`}>
+                    <div className={`w-2 h-2 rounded-full ${!navigator.onLine && scanMode === "cloud" ? 'bg-red-500 animate-pulse' : !modelLoaded && scanMode === "local" ? 'bg-red-400' : isScanning ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'} shadow-[0_0_8px_currentColor]`} />
+                    <span className={`text-[10px] font-black tracking-widest ${!navigator.onLine && scanMode === "cloud" ? 'text-red-500' : !modelLoaded && scanMode === "local" ? 'text-red-400' : isScanning ? 'text-amber-400' : 'text-[#00ff88]'} uppercase`}>
+                        {!navigator.onLine && scanMode === "cloud" ? "偵測到離線：無法使用雲端 AI" : scanMode === "cloud" ? (isScanning ? "Cloud AI 串接中..." : "Gemini 視覺系統已就緒") : (!modelLoaded ? "系統核心啟動中..." : isScanning ? "正在為您辨識..." : "掃描系統已就緒")}
                     </span>
                 </div>
 

@@ -38,8 +38,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,onnx,wasm}'],
         cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 20 * 1024 * 1024, // 20MB for model and wasm
       }
     }),
   ],

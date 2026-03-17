@@ -693,7 +693,7 @@ export function Profile() {
     const { settings, updateSettings, clearAll, scannedItems } = useIngredients();
     const nav = useNavigate();
     const [apiStatus, setApiStatus] = useState<{ status: 'online' | 'offline' | 'no_key', model: string, keyCount: number } | null>(null);
-    const [selectedModel, setSelectedModel] = useState<string | null>(() => llmService.getPreferredModel());
+    const [activeModal, setActiveModal] = useState<string | null>(null);
 
     useEffect(() => {
         const check = async () => {
@@ -703,430 +703,356 @@ export function Profile() {
         check();
     }, []);
 
+    const settingsGrid = [
+        { id: 'api', label: "神經節點", desc: "API & Model", icon: Sparkles, color: "text-purple-400", bg: "bg-purple-500/10" },
+        { id: 'dietary', label: "飲食偏好", desc: "Preferences", icon: ChefHat, color: "text-[#00ff88]", bg: "bg-[#00ff88]/10" },
+        { id: 'display', label: "介面縮放", desc: "UI Scaling", icon: Settings, color: "text-blue-400", bg: "bg-blue-500/10" },
+        { id: 'system', label: "系統設定", desc: "System", icon: Bell, color: "text-amber-400", bg: "bg-amber-500/10" },
+    ];
+
     return (
-        <div className="pb-28 px-4 pt-6 relative">
-            <h2 className="text-center text-xs font-black text-white/30 uppercase tracking-[0.3em] mb-4">User Settings</h2>
+        <div className="pb-28 px-6 pt-8 relative min-h-screen">
+            <h2 className="text-center text-[10px] font-black text-white/20 uppercase tracking-[0.4em] mb-12">Neural Core Interface</h2>
             
-            <div className="flex flex-col items-center mb-4 mt-1">
-                <div className="w-16 h-16 rounded-full bg-[#1a4d3d] border-4 border-[#00ff88]/20 flex items-center justify-center shadow-2xl mb-3 relative">
-                    <div className="absolute inset-0 bg-[#00ff88]/5 rounded-full animate-pulse" />
-                    <Users size={32} className="text-[#00ff88] relative z-10" strokeWidth={1} />
+            <div className="flex flex-col items-center mb-12">
+                <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-24 h-24 rounded-[2.5rem] bg-[#1a4d3d] border-4 border-[#00ff88]/20 flex items-center justify-center shadow-[0_20px_50px_rgba(0,255,136,0.15)] mb-6 relative group"
+                >
+                    <div className="absolute inset-0 bg-[#00ff88]/5 rounded-[2.5rem] animate-pulse group-hover:bg-[#00ff88]/10 transition-all" />
+                    <User size={48} className="text-[#00ff88] relative z-10" strokeWidth={1} />
+                </motion.div>
+                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">管理中心</h2>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#00ff88]/10 border border-[#00ff88]/20 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+                    <span className="text-[10px] font-black text-[#00ff88] uppercase tracking-widest">已認證：首席美食品味家</span>
                 </div>
-                <h2 className="text-xl font-black text-white uppercase tracking-tighter mb-1">使用者中心</h2>
-                <div className="text-[10px] font-bold text-[#00ff88] uppercase tracking-widest opacity-60">已認證：首席美食品味家</div>
             </div>
 
-            {/* API Connection Status Badge */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-4 rounded-3xl border border-white/10 mb-4 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#00ff88]/5 rounded-full blur-3xl pointer-events-none" />
-                <h3 className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-3 px-1">神經網路 API 連線 (API Status)</h3>
-                <div className="flex items-center justify-between bg-black/20 p-3.5 rounded-2xl border border-white/5 relative z-10 transition-all hover:bg-black/30">
-                    <div className="flex items-center gap-3">
-                        <div className={`w-2.5 h-2.5 rounded-full animate-pulse shadow-lg ${
-                            apiStatus?.status === 'online' ? 'bg-[#00ff88] shadow-[#00ff88]/40' : 
-                            apiStatus?.status === 'no_key' ? 'bg-amber-400 shadow-amber-400/40' : 
-                            apiStatus ? 'bg-red-500 shadow-red-500/40' : 'bg-gray-500'
-                        }`} />
+            {/* Compact Grid of Settings Buttons */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                {settingsGrid.map((item) => (
+                    <motion.button
+                        key={item.id}
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setActiveModal(item.id)}
+                        className="p-5 rounded-3xl bg-[#0d231b]/60 backdrop-blur-xl border border-white/5 flex flex-col items-start gap-4 text-left shadow-xl group transition-all"
+                    >
+                        <div className={`w-12 h-12 ${item.bg} rounded-2xl flex items-center justify-center border border-white/5 group-hover:border-white/20 transition-all`}>
+                            <item.icon size={24} className={item.color} />
+                        </div>
                         <div>
-                            <div className="text-[10px] font-black text-white uppercase tracking-wider">
-                                {apiStatus?.status === 'online' ? '服務連線中' : 
-                                 apiStatus?.status === 'no_key' ? '未偵測金鑰' : 
-                                 apiStatus ? '節點離線' : '正在初始化...'}
-                            </div>
-                            <div className="text-[7px] font-bold text-gray-500 uppercase tracking-tight">
-                                已啟動 {llmService.getAvailableModels().length} 個神經節點進行輪替
-                            </div>
+                            <div className="text-xs font-black text-white uppercase tracking-wider">{item.label}</div>
+                            <div className="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">{item.desc}</div>
                         </div>
-                    </div>
-                    <div className="text-[8px] font-black text-[#00ff88] bg-[#00ff88]/10 border border-[#00ff88]/20 px-2 py-1 rounded-lg uppercase tracking-widest">
-                        {apiStatus?.keyCount || 0} Nodes
-                    </div>
-                </div>
-
-                {/* API Key Management (For Remote Testing) */}
-                <div className="mb-6 p-4 bg-[#00ff88]/5 border border-[#00ff88]/10 rounded-2xl relative overflow-hidden group/api">
-                    <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#00ff88]/10 rounded-full blur-3xl pointer-events-none" />
-                    
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                            <Sparkles size={12} className="text-[#00ff88]" />
-                            <h3 className="text-[10px] font-black text-white uppercase tracking-widest">API 金鑰管理 (Remote API Keys)</h3>
-                        </div>
-                        {settings.customApiKeys && (
-                            <button 
-                                onClick={() => updateSettings({ customApiKeys: "" })}
-                                className="text-[8px] font-black text-red-500/50 uppercase hover:text-red-500 transition-all hover:bg-red-500/10 px-2 py-0.5 rounded-md"
-                            >
-                                清除金鑰
-                            </button>
-                        )}
-                    </div>
-                    
-                    <div className="relative mb-3">
-                        <input 
-                            type="password"
-                            placeholder="貼上你的 Gemini API Key (多組請用逗號分隔)"
-                            value={settings.customApiKeys || ""}
-                            onChange={(e) => updateSettings({ customApiKeys: e.target.value })}
-                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-[10px] font-mono text-[#00ff88] placeholder:text-white/10 outline-none focus:border-[#00ff88]/40 transition-all shadow-inner"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <div className="flex items-start gap-2 p-2 bg-amber-400/5 border border-amber-400/10 rounded-xl">
-                            <AlertTriangle size={10} className="text-amber-400 mt-0.5" />
-                            <p className="text-[8px] text-gray-400 font-bold leading-relaxed uppercase">
-                                安全提示：由於 GitHub 不會儲存你的原始密鑰，遠端測試時請在此貼上金鑰。密鑰僅存於當前瀏覽器，不會上傳伺服器。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* API Key List with Cooldown Status */}
-                <div className="mt-4 pt-3 border-t border-white/5">
-                    <div className="text-[7px] font-black text-white/20 uppercase tracking-[0.2em] mb-2 px-1">已載入的金鑰節點 (Nodes Status)</div>
-                    <div className="space-y-1">
-                        {llmService.getKeyStatusList().length > 0 ? (
-                            llmService.getKeyStatusList().map((keyInfo, idx) => (
-                                <div key={idx} className={`flex items-center justify-between px-2 py-1.5 rounded-lg border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : 'bg-black/10 border-white/5'}`}>
-                                    <div className="flex items-center gap-2">
-                                        <div className={`w-1 h-1 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'}`} />
-                                        <span className="text-[8px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
-                                    </div>
-                                    <div className={`text-[6px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-[#00ff88] opacity-40'}`}>
-                                        {keyInfo.coolingDown ? `冷卻 ${keyInfo.cooldownRemaining}s` : 'Active'}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-[8px] font-black text-red-500/50 uppercase tracking-widest p-2 bg-red-500/5 rounded-lg border border-red-500/10">未偵測到有效金鑰</div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Full Model List - Selectable */}
-                <div className="mt-4 pt-3 border-t border-white/5">
-                    <div className="flex items-center justify-between mb-2.5 px-1">
-                        <div className="text-[7px] font-black text-white/20 uppercase tracking-[0.2em]">優先使用模型 (Select Model)</div>
-                        {selectedModel && <button onClick={() => { llmService.setPreferredModel(null); setSelectedModel(null); }} className="text-[6px] font-black text-amber-400/60 uppercase hover:text-amber-400 transition-all">重置</button>}
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                        {llmService.getAvailableModels().map((m, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => {
-                                    const next = selectedModel === m ? null : m;
-                                    llmService.setPreferredModel(next);
-                                    setSelectedModel(next);
-                                }}
-                                className={`px-2 py-1 rounded-md text-[6px] font-black uppercase tracking-tighter border transition-all active:scale-95 ${
-                                    selectedModel === m
-                                        ? 'bg-[#00ff88] border-[#00ff88] text-[#0f2e24] shadow-[0_0_12px_rgba(0,255,136,0.4)]'
-                                        : selectedModel === null && idx === 0
-                                            ? 'bg-[#00ff88]/10 border-[#00ff88]/30 text-[#00ff88]'
-                                            : 'bg-white/5 border-white/5 text-white/30 hover:border-white/20 hover:text-white/50'
-                                }`}
-                            >
-                                {m}
-                            </button>
-                        ))}
-                    </div>
-                    <div className="text-[6px] text-white/20 mt-2 px-1">
-                        當前使用：{selectedModel || `${llmService.getAvailableModels()[0]} (自動首選)`}
-                    </div>
-                </div>
+                    </motion.button>
+                ))}
             </div>
 
-            {/* Quick Settings */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-6 rounded-3xl border border-white/10 mb-4 shadow-xl">
-                <h3 className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-4 px-1">核心系統設定 (Core Settings)</h3>
-                
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20">
-                                <Moon size={16} className="text-[#00ff88]" />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase tracking-tight">深色賽博模式 (Dark Mode)</div>
-                                <div className="text-[7px] text-gray-500 font-bold uppercase">還原深綠色視覺美學</div>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => updateSettings({ darkMode: !settings.darkMode })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${settings.darkMode ? 'bg-[#00ff88]' : 'bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.darkMode ? 'right-1' : 'left-1'}`} />
-                        </button>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20">
-                                <Bell size={16} className="text-[#00ff88]" />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase tracking-tight">系統主動通知</div>
-                                <div className="text-[7px] text-gray-500 font-bold uppercase">食材過期預警提醒</div>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={async () => {
-                                const granted = await notificationService.requestPermission();
-                                updateSettings({ notifications: !settings.notifications && granted });
-                            }}
-                            className={`w-12 h-6 rounded-full transition-all relative ${settings.notifications ? 'bg-[#00ff88]' : 'bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.notifications ? 'right-1' : 'left-1'}`} />
-                        </button>
-                    </div>
-
-                    {/* iOS Web Push Hint */}
-                    <div className="mt-4 p-3 bg-amber-400/10 border border-amber-400/20 rounded-2xl">
-                        <div className="flex items-center gap-2 mb-1">
-                            <AlertTriangle size={12} className="text-amber-400" />
-                            <span className="text-[9px] font-black text-amber-400 uppercase tracking-tight">iOS 使用者注意</span>
-                        </div>
-                        <p className="text-[8px] text-gray-400 leading-relaxed font-bold">
-                            iOS 16.4+ 支援 Web Push。請先點擊 Safari「分享」並選擇「加入主畫面」，由桌面開啟後在此啟用方可生效。
-                        </p>
-                    </div>
-
-                    <button 
-                        onClick={() => notificationService.send("測試通知", "這是一則來自系統的同步驗證測試訊息。")}
-                        className="w-full mt-3 py-2 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase text-gray-400 hover:bg-[#00ff88]/10 hover:text-[#00ff88] transition-all"
-                    >
-                        發送測試通知
-                    </button>
-                </div>
-            </div>
-
-            {/* UI Layout & Scaling */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-6 rounded-3xl border border-white/10 mb-4 shadow-xl">
-                <h3 className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest mb-4 px-1 flex items-center gap-1.5">
-                    <Settings size={10} /> 介面佈局與縮放 (UI Scaling)
-                </h3>
-
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20">
-                                <Sparkles size={16} className="text-[#00ff88]" />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase tracking-tight">螢幕尺寸自適應</div>
-                                <div className="text-[7px] text-gray-500 font-bold uppercase">自動根據手機寬度調整比例</div>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => updateSettings({ autoScale: !settings.autoScale })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${settings.autoScale ? 'bg-[#00ff88]' : 'bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.autoScale ? 'right-1' : 'left-1'}`} />
-                        </button>
-                    </div>
-
-                    {!settings.autoScale && (
-                        <div className="space-y-3 px-1">
-                            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-gray-400">
-                                <span>手動縮放比例</span>
-                                <span className="text-[#00ff88]">{Math.round(settings.uiScale * 100)}%</span>
-                            </div>
-                            <input 
-                                type="range" 
-                                min="0.5" 
-                                max="1.5" 
-                                step="0.05"
-                                value={settings.uiScale}
-                                onChange={(e) => updateSettings({ uiScale: parseFloat(e.target.value) })}
-                                className="w-full accent-[#00ff88] h-1.5 bg-white/10 rounded-full appearance-none outline-none"
-                            />
-                            <div className="flex justify-between text-[7px] text-gray-600 font-black uppercase">
-                                <span>MIN (50%)</span>
-                                <span>DEFAULT (100%)</span>
-                                <span>MAX (150%)</span>
-                            </div>
-                        </div>
-                    )}
-                    
-                    <button 
-                        onClick={() => updateSettings({ uiScale: 1.0, autoScale: true })}
-                        className="w-full py-2 bg-white/5 border border-white/5 rounded-xl text-[8px] font-black uppercase text-gray-600 hover:text-white transition-all"
-                    >
-                        重置為預設
-                    </button>
-                </div>
-            </div>
-
-            {/* Personalized Dietary Preferences */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-6 rounded-3xl border border-white/10 mb-4 shadow-xl">
-                <h3 className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest mb-4 px-1 flex items-center gap-1.5">
-                    <Sparkles size={10} /> 個人化飲食設定 (Personal Preferences)
-                </h3>
-                
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20">
-                                <Package size={16} className="text-[#00ff88]" />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase tracking-tight">素食模式 (Vegetarian)</div>
-                                <div className="text-[7px] text-gray-500 font-bold uppercase">自動排除肉類與海鮮食譜</div>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => updateSettings({ dietary: { ...settings.dietary, vegetarian: !settings.dietary.vegetarian } })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${settings.dietary.vegetarian ? 'bg-[#00ff88]' : 'bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.dietary.vegetarian ? 'right-1' : 'left-1'}`} />
-                        </button>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20">
-                                <ChefHat size={16} className="text-[#00ff88]" />
-                            </div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase tracking-tight">減體重/低卡 (Weight Loss)</div>
-                                <div className="text-[7px] text-gray-500 font-bold uppercase">優先推薦低油鹽與低熱量方案</div>
-                            </div>
-                        </div>
-                        <button 
-                            onClick={() => updateSettings({ dietary: { ...settings.dietary, lowCalorie: !settings.dietary.lowCalorie } })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${settings.dietary.lowCalorie ? 'bg-[#00ff88]' : 'bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.dietary.lowCalorie ? 'right-1' : 'left-1'}`} />
-                        </button>
-                    </div>
-
-                    <div className="pt-2">
-                        <div className="flex items-center gap-2 mb-2 px-1">
-                            <AlertTriangle size={12} className="text-amber-400" />
-                            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">過敏原或忌口 (Allergies)</label>
-                        </div>
-                        <input 
-                            type="text" 
-                            placeholder="例如：花生, 蠶豆, 海鮮..." 
-                            value={settings.dietary.allergies || ""}
-                            onChange={(e) => updateSettings({ dietary: { ...settings.dietary, allergies: e.target.value } })}
-                            className="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-[11px] text-white placeholder:text-white/10 outline-none focus:border-[#00ff88]/30 transition-all font-bold"
-                        />
+            {/* Quick Analytics Link */}
+            <button 
+                onClick={() => nav("/saved")}
+                className="w-full flex items-center justify-between p-5 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 transition-all mb-4 group"
+            >
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-400/10 flex items-center justify-center border border-amber-400/20"><HelpCircle size={24} className="text-amber-400" /></div>
+                    <div>
+                        <div className="text-xs font-black text-white uppercase tracking-wider">耗損數據分析</div>
+                        <div className="text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Neural Consumption Dashboard</div>
                     </div>
                 </div>
-            </div>
+                <ChevronRight size={20} className="text-gray-600 group-hover:text-white transition-all" />
+            </button>
 
-            {/* Neural Matrix Settings */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-4 rounded-3xl border border-white/10 mb-4 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#00ff88]/10 rounded-full blur-3xl pointer-events-none" />
-                
-                <h3 className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest mb-4 px-1 flex items-center gap-1.5">
-                    <Settings size={10} /> 系統功能設定 (System Settings)
-                </h3>
-                
-                <div className="space-y-5">
-                    {/* Notification Toggle */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center"><AlertTriangle size={16} className="text-blue-400" /></div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase">食材過期提醒</div>
-                                <div className="text-[8px] font-bold text-gray-500 uppercase">智慧監測食材效期並發送通知</div>
-                            </div>
-                        </div>
-                        <button
-                            onClick={async () => {
-                                const newSetting = !settings.notifications;
-                                if (newSetting) await notificationService.requestPermission();
-                                updateSettings({ notifications: newSetting });
-                            }}
-                            className={`w-12 h-6 rounded-full relative transition-all duration-500 ${settings.notifications ? "bg-[#00ff88]" : "bg-white/10"}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${settings.notifications ? "left-7" : "left-1"}`} />
-                        </button>
-                    </div>
-
-                    {/* Neural Optimization Toggle */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center"><Sparkles size={16} className="text-purple-400" /></div>
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase">掃描性能優化</div>
-                                <div className="text-[8px] font-bold text-gray-500 uppercase">提升物體辨識的反應速度</div>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => updateSettings({ neuralOptimized: !settings.neuralOptimized })}
-                            className={`w-12 h-6 rounded-full relative transition-all duration-300 ${settings.neuralOptimized ? "bg-purple-500" : "bg-white/10"}`}
-                        >
-                            <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${settings.neuralOptimized ? "left-7" : "left-1"}`} />
-                        </button>
-                    </div>
-
-                    {/* Confidence Threshold Slider */}
-                    <div className="pt-2">
-                        <div className="flex justify-between items-center mb-4">
-                            <div>
-                                <div className="text-[10px] font-black text-white uppercase">辨識靈敏度</div>
-                                <div className="text-[8px] font-bold text-gray-500 uppercase">調整視覺辨識的嚴謹門檻</div>
-                            </div>
-                            <div className="text-xs font-black text-[#00ff88]">{Math.round(settings.confidenceThreshold * 100)}%</div>
-                        </div>
-                        <input 
-                            type="range" 
-                            min="0.1" 
-                            max="0.9" 
-                            step="0.05" 
-                            value={settings.confidenceThreshold} 
-                            onChange={(e) => updateSettings({ confidenceThreshold: parseFloat(e.target.value) })}
-                            className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#00ff88]"
-                        />
-                    </div>
+            {/* Danger Zone */}
+            <button 
+                onClick={() => {
+                    if (window.confirm("確定要清空所有存儲的食材數據嗎？")) {
+                        clearAll();
+                        alert("數據已重置。");
+                    }
+                }}
+                className="w-full flex items-center gap-4 p-5 bg-red-500/5 rounded-3xl border border-red-500/10 hover:bg-red-500/10 transition-all"
+            >
+                <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center border border-red-500/20"><LogOut size={22} className="text-red-500" /></div>
+                <div>
+                    <div className="text-xs font-black text-red-500 uppercase tracking-wider">清空所有資料</div>
+                    <div className="text-[8px] font-bold text-gray-900/40 uppercase tracking-widest mt-0.5">Danger: Local Storage Clear</div>
                 </div>
-            </div>
+            </button>
 
-            {/* Support & Data Management */}
-            <div className="bg-[#0d231b]/60 backdrop-blur-xl p-4 rounded-3xl border border-white/10 mb-6 shadow-2xl">
-                <h3 className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-4 px-1">資料與權限管理</h3>
-                <div className="space-y-3">
-                    <button onClick={() => nav("/saved")} className="w-full flex items-center justify-between p-3.5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all text-left">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-amber-400/10 flex items-center justify-center"><HelpCircle size={16} className="text-amber-400" /></div>
-                            <div>
-                                <div className="text-[9px] font-black text-white uppercase">查看食材耗損分析</div>
-                                <div className="text-[8px] font-bold text-gray-500 uppercase">分析您過去的食材利用效率</div>
-                            </div>
-                        </div>
-                        <ChevronRight size={14} className="text-gray-600" />
-                    </button>
+            <AnimatePresence>
+                {activeModal && (
+                    <SettingsModal 
+                        type={activeModal} 
+                        onClose={() => setActiveModal(null)} 
+                        settings={settings}
+                        updateSettings={updateSettings}
+                        apiStatus={apiStatus}
+                    />
+                )}
+            </AnimatePresence>
 
-                    <button 
-                        onClick={() => {
-                            if (window.confirm("確定要清空所有存儲的食材數據嗎？")) {
-                                clearAll();
-                                alert("數據已重置。");
-                            }
-                        }}
-                        className="w-full flex items-center justify-between p-3.5 bg-red-500/5 rounded-2xl border border-red-500/10 hover:bg-red-500/10 transition-all text-left"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center"><LogOut size={16} className="text-red-500" /></div>
-                            <div>
-                                <div className="text-[9px] font-black text-red-500 uppercase font-black">清空所有資料</div>
-                                <div className="text-[8px] font-bold text-gray-500 uppercase">重置所有存儲的食材記錄</div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div className="text-center">
-                <div className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">VERSION 1.0.0 LITE / NEURAL CORE v2</div>
+            <div className="text-center mt-12 opacity-20">
+                <div className="text-[8px] font-black text-white uppercase tracking-[0.5em]">KITCHEN AI v1.5 / ELITE CORE</div>
             </div>
         </div>
     );
 }
+
+/**
+ * Settings Modal Component
+ * A high-fidelity, unified modal for all configurations.
+ */
+function SettingsModal({ type, onClose, settings, updateSettings, apiStatus }: { 
+    type: string, 
+    onClose: () => void, 
+    settings: any, 
+    updateSettings: (s: any) => void,
+    apiStatus: any 
+}) {
+    const [selectedModel, setSelectedModel] = useState<string | null>(() => llmService.getPreferredModel());
+
+    const renderContent = () => {
+        switch (type) {
+            case 'api':
+                return (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-3 h-3 rounded-full animate-pulse shadow-lg ${
+                                    apiStatus?.status === 'online' ? 'bg-[#00ff88] shadow-[#00ff88]/40' : 
+                                    apiStatus?.status === 'no_key' ? 'bg-amber-400 shadow-amber-400/40' : 
+                                    apiStatus ? 'bg-red-500 shadow-red-500/40' : 'bg-gray-500'
+                                }`} />
+                                <div>
+                                    <div className="text-xs font-black text-white uppercase">{apiStatus?.status === 'online' ? '服務連線中' : apiStatus?.status === 'no_key' ? '未偵測金鑰' : '節點離線'}</div>
+                                    <div className="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">系統已鎖定 {apiStatus?.keyCount || 0} 個神經節點</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between px-1">
+                                <h4 className="text-[9px] font-black text-[#00ff88] uppercase tracking-widest">金鑰管理</h4>
+                                {settings.customApiKeys && <button onClick={() => updateSettings({ customApiKeys: "" })} className="text-[8px] font-black text-red-500/50 uppercase">清除</button>}
+                            </div>
+                            <input 
+                                type="password"
+                                placeholder="貼上 API Key (多組請用逗號分隔)"
+                                value={settings.customApiKeys || ""}
+                                onChange={(e) => updateSettings({ customApiKeys: e.target.value })}
+                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs font-mono text-[#00ff88] outline-none focus:border-[#00ff88]/30 shadow-inner transition-all"
+                            />
+                        </div>
+
+                        {/* Node Status Monitor */}
+                        <div className="space-y-2 mt-4">
+                            <h4 className="text-[7px] font-black text-white/20 uppercase tracking-widest px-1">即時節點監控 (Nodes Monitor)</h4>
+                            <div className="grid grid-cols-1 gap-1.5">
+                                {llmService.getKeyStatusList().length > 0 ? (
+                                    llmService.getKeyStatusList().map((keyInfo, idx) => (
+                                        <div key={idx} className={`flex items-center justify-between px-3 py-2 rounded-xl border transition-all ${keyInfo.coolingDown ? 'bg-red-500/10 border-red-500/20' : 'bg-black/20 border-white/5'}`}>
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${keyInfo.coolingDown ? 'bg-amber-400 animate-pulse' : 'bg-[#00ff88]'}`} />
+                                                <span className="text-[9px] font-mono text-white/60">Node-{idx + 1}: {keyInfo.masked}</span>
+                                            </div>
+                                            <div className={`text-[7px] font-black uppercase ${keyInfo.coolingDown ? 'text-amber-400' : 'text-[#00ff88] opacity-40'}`}>
+                                                {keyInfo.coolingDown ? `Cooldown ${keyInfo.cooldownRemaining}s` : 'Active'}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-[9px] font-bold text-red-500/40 uppercase tracking-widest p-3 bg-red-500/5 rounded-xl border border-red-500/10 text-center">未偵測到有效節點</div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <h4 className="text-[9px] font-black text-white/30 uppercase tracking-widest px-1">優先神經模型</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {llmService.getAvailableModels().map((m, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            const next = selectedModel === m ? null : m;
+                                            llmService.setPreferredModel(next);
+                                            setSelectedModel(next);
+                                        }}
+                                        className={`px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-tighter border transition-all ${
+                                            selectedModel === m ? 'bg-[#00ff88] border-[#00ff88] text-[#0f2e24] shadow-lg' : 'bg-white/5 border-white/10 text-white/40'
+                                        }`}
+                                    >
+                                        {m}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'dietary':
+                return (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 gap-4">
+                            {[
+                                { id: 'vegetarian', label: "素食模式 (Vegetarian)", desc: "排除肉類與海鮮食譜", icon: Package },
+                                { id: 'lowCalorie', label: "減脂/低卡 (Weight Loss)", desc: "推薦低油鹽高纖維方案", icon: ChefHat }
+                            ].map(pref => (
+                                <div key={pref.id} className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-[#00ff88]/10 flex items-center justify-center border border-[#00ff88]/20"><pref.icon size={20} className="text-[#00ff88]" /></div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-white uppercase">{pref.label}</div>
+                                            <div className="text-[8px] text-gray-500 font-bold uppercase">{pref.desc}</div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => updateSettings({ dietary: { ...settings.dietary, [pref.id]: !settings.dietary[pref.id] } })}
+                                        className={`w-12 h-6 rounded-full relative transition-all ${settings.dietary[pref.id] ? 'bg-[#00ff88]' : 'bg-white/10'}`}
+                                    >
+                                        <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.dietary[pref.id] ? 'right-1' : 'left-1'}`} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="space-y-3">
+                            <h4 className="text-[9px] font-black text-amber-400 uppercase tracking-widest px-1">過敏原與禁忌 (Allergies)</h4>
+                            <input 
+                                type="text" 
+                                placeholder="例如：花生, 海鮮, 蠶豆..." 
+                                value={settings.dietary.allergies || ""}
+                                onChange={(e) => updateSettings({ dietary: { ...settings.dietary, allergies: e.target.value } })}
+                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-xs text-white placeholder:text-white/10 outline-none focus:border-[#00ff88]/30 font-bold transition-all"
+                            />
+                        </div>
+                    </div>
+                );
+            case 'display':
+                return (
+                    <div className="space-y-8">
+                        <div className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20"><Sparkles size={20} className="text-blue-400" /></div>
+                                <div>
+                                    <div className="text-[10px] font-black text-white uppercase">螢幕尺寸自適應</div>
+                                    <div className="text-[8px] text-gray-500 font-bold uppercase">自動偵測寬度進行縮放</div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => updateSettings({ autoScale: !settings.autoScale })}
+                                className={`w-12 h-6 rounded-full relative transition-all ${settings.autoScale ? 'bg-blue-400' : 'bg-white/10'}`}
+                            >
+                                <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings.autoScale ? 'right-1' : 'left-1'}`} />
+                            </button>
+                        </div>
+
+                        {!settings.autoScale && (
+                            <div className="space-y-6 px-2">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[10px] font-black text-white/50 uppercase tracking-widest">手動縮放比例</span>
+                                    <span className="text-xl font-black text-blue-400">{Math.round(settings.uiScale * 100)}%</span>
+                                </div>
+                                <input 
+                                    type="range" min="0.5" max="1.5" step="0.05"
+                                    value={settings.uiScale}
+                                    onChange={(e) => updateSettings({ uiScale: parseFloat(e.target.value) })}
+                                    className="w-full h-2 bg-white/10 rounded-full appearance-none outline-none accent-blue-400"
+                                />
+                                <div className="flex justify-between text-[6px] font-black text-white/20 uppercase tracking-[0.2em]">
+                                    <span>Compact (50%)</span>
+                                    <span>Expansion (150%)</span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        <button onClick={() => updateSettings({ uiScale: 1.0, autoScale: true })} className="w-full py-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 uppercase tracking-widest">還原出廠設定</button>
+                    </div>
+                );
+            case 'system':
+                return (
+                    <div className="space-y-6">
+                        {[
+                            { id: 'notifications', label: "系統主動通知", desc: "食材效期預警提醒", icon: Bell, action: async () => { const g = await notificationService.requestPermission(); updateSettings({ notifications: !settings.notifications && g }); } },
+                            { id: 'darkMode', label: "賽博深色模式", desc: "Cyberpunk Aesthetic", icon: Moon, action: () => updateSettings({ darkMode: !settings.darkMode }) },
+                            { id: 'neuralOptimized', label: "神經性能優化", desc: "Neural Engine Boost", icon: Sparkles, action: () => updateSettings({ neuralOptimized: !settings.neuralOptimized }), color: 'bg-purple-500' }
+                        ].map(sys => (
+                            <div key={sys.id} className="flex items-center justify-between bg-black/40 p-5 rounded-3xl border border-white/5">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10"><sys.icon size={20} className="text-white/60" /></div>
+                                    <div>
+                                        <div className="text-[10px] font-black text-white uppercase">{sys.label}</div>
+                                        <div className="text-[8px] text-gray-500 font-bold uppercase">{sys.desc}</div>
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={sys.action}
+                                    className={`w-12 h-6 rounded-full relative transition-all ${settings[sys.id] ? (sys.color || 'bg-[#00ff88]') : 'bg-white/10'}`}
+                                >
+                                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${settings[sys.id] ? 'right-1' : 'left-1'}`} />
+                                </button>
+                            </div>
+                        ))}
+
+                        <div className="p-4 bg-amber-400/5 border border-amber-400/10 rounded-2xl">
+                            <div className="flex items-center gap-2 mb-2">
+                                <AlertTriangle size={14} className="text-amber-400" />
+                                <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">iOS 用戶提示</span>
+                            </div>
+                            <p className="text-[8px] text-gray-400 font-bold leading-relaxed uppercase">請透過「加入主畫面」方式開啟網頁，方可啟用主動通知功能。</p>
+                        </div>
+
+                        <button onClick={() => notificationService.send("驗證通知", "Neural Core 通道已串接成功。")} className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[9px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-all">發送診斷訊號</button>
+                    </div>
+                );
+            default: return null;
+        }
+    };
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[150] bg-[#0f2e24]/80 backdrop-blur-2xl flex items-end sm:items-center justify-center p-0 sm:p-6"
+        >
+            <motion.div 
+                initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="bg-[#1a4d3d] w-full max-w-lg rounded-t-[3rem] sm:rounded-[3.5rem] p-8 border-t sm:border border-white/10 shadow-[0_-20px_80px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col max-h-[90vh]"
+            >
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#00ff88]/5 to-transparent pointer-events-none" />
+                
+                <div className="flex items-center justify-between mb-10 relative z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-[#00ff88]/20 flex items-center justify-center text-[#00ff88] border border-[#00ff88]/20 shadow-lg">
+                            <Settings size={22} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-white uppercase tracking-widest">
+                                {type === 'api' ? '神經節點設定' : type === 'dietary' ? '個人飲食偏好' : type === 'display' ? '視覺介面縮放' : '核心系統設定'}
+                            </h3>
+                            <div className="text-[8px] font-bold text-[#00ff88] uppercase tracking-widest opacity-60">Neural Matrix Configuration</div>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center text-gray-400 hover:text-white backdrop-blur-md border border-white/5 transition-all">
+                        <X size={20} />
+                    </button>
+                </div>
+
+                <div className="overflow-y-auto pr-2 custom-scrollbar relative z-10 pb-4">
+                    {renderContent()}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/5 relative z-10 flex justify-center">
+                    <button onClick={onClose} className="w-full py-4 rounded-2xl bg-[#00ff88] text-[#0f2e24] font-black uppercase text-xs tracking-widest shadow-xl active:scale-95 transition-all">
+                        更新並關閉介面
+                    </button>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+}
+
 
 /**
  * 系統數據中心 / 保存內容頁 (Saved / Data Statistics)
